@@ -1,0 +1,9 @@
+* text=auto eol=lf
+
+# Preserve supplied source artifacts byte-for-byte, including intentional Markdown hard breaks.
+sources/discourse/DiscourseSkill.original.md -whitespace
+sources/discourse/DiscourseSkill.improved.json -whitespace
+sources/discourse/discourse-skill-improvements-report.md -whitespace
+published-reviews/discourse/brand-navigation/2026-09-21-draft/review.md -whitespace
+published-reviews/discourse/brand-navigation/2026-09-21-draft/gap-closure-plan.md -whitespace
+.agents/skills/codeworkslabs-platform-review/references/platforms/statamic/marketplace-review/SKILL.md -whitespace

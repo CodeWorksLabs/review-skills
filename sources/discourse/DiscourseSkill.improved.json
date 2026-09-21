@@ -1,0 +1,1328 @@
+{
+  "format": "codex.discourse-extension-review.skill",
+  "format_version": "2.0.1",
+  "metadata": {
+    "name": "discourse-extension-review",
+    "description": "Review Discourse plugins, themes, and theme components for supported integration, correctness, security, compatibility, lifecycle safety, accessibility, documentation, and release readiness. Use for static audits, integrated verification, or release review of a Discourse extension.",
+    "source_name": "discourse-plugin-review",
+    "source_description": "Review a Discourse plugin for native integration, correctness, security, upgrade safety, compatibility, usability, documentation, and release readiness. Use when auditing a Discourse plugin before release, marketplace/community publication, installation on a production forum, or after a significant plugin change."
+  },
+  "lineage": {
+    "source_file": "DiscourseSkill.md",
+    "source_sha256": "94a355d6c52d8e8330886be4d8ae6f7a28281fad80d919fdac1e17b4688149c8",
+    "transformation": "Original rules preserved as Markdown and augmented with artifact routing, review modes, evidence thresholds, release policies, and a machine-readable report contract."
+  },
+  "purpose": "Determine whether the extension is a well-behaved Discourse integration that administrators can install, configure, update, operate, disable, and remove without unreasonable risk to the forum or its data.",
+  "constraints": [
+    "Evaluate the product and exact artifact that actually ship.",
+    "Do not modify the reviewed extension unless the user explicitly requests fixes.",
+    "Do not infer approval by Discourse, CDCK, a marketplace, hosting provider, or another organization.",
+    "Do not describe the result as a comprehensive security audit or legal certification.",
+    "Anything material that was not tested must remain Not verified.",
+    "Do not reject an extension merely because it is small, experimental, AI-assisted, or supports a limited version range."
+  ],
+  "workflow": [
+    {
+      "step": 1,
+      "id": "classify_artifact",
+      "instruction": "Classify the target before applying rules. Use plugin, theme_component, theme, hybrid, integration_repository, release_artifact, or working_tree. Record the evidence supporting the classification."
+    },
+    {
+      "step": 2,
+      "id": "select_review_mode",
+      "instruction": "Declare exactly one primary review mode and any explicitly requested focus areas. Do not imply that a lower-evidence mode established a higher-evidence conclusion."
+    },
+    {
+      "step": 3,
+      "id": "identify_artifact",
+      "instruction": "Record immutable source identity, release relationship, dirty state, and relevant differences from the published candidate."
+    },
+    {
+      "step": 4,
+      "id": "inventory_surfaces",
+      "instruction": "Inventory the files, dependencies, integration points, privileged boundaries, persistent state, lifecycle hooks, tests, workflows, documentation, and release artifacts applicable to the selected profile."
+    },
+    {
+      "step": 5,
+      "id": "review_and_execute",
+      "instruction": "Inspect the applicable rules and execute the checks required by the selected mode. Record commands, environments, outcomes, and omissions."
+    },
+    {
+      "step": 6,
+      "id": "reconcile_evidence",
+      "instruction": "Reconcile conflicting or historical evidence using dates, commits, trees, environments, and behavioral scope. Do not let a newer statement supersede older evidence unless it covers the same behavior on the same or an implementation-equivalent artifact."
+    },
+    {
+      "step": 7,
+      "id": "report",
+      "instruction": "Produce the required report, separate findings from verification gaps and optional improvements, and include evidence for every rule disposition."
+    }
+  ],
+  "artifact_types": {
+    "plugin": {
+      "indicators": [
+        "plugin.rb",
+        "app/",
+        "lib/",
+        "db/migrate/"
+      ],
+      "emphasis": [
+        "server_authorization",
+        "routes_and_api_contracts",
+        "models_and_serializers",
+        "migrations_and_data_lifecycle",
+        "background_jobs",
+        "external_services_and_credentials",
+        "multisite_behavior",
+        "enable_disable_uninstall"
+      ]
+    },
+    "theme_component": {
+      "indicators": [
+        "about.json with component=true",
+        "settings.yml",
+        "javascripts/discourse/",
+        "common/ or desktop/ or mobile/ styles"
+      ],
+      "emphasis": [
+        "plugin_api_outlets_connectors_modifiers",
+        "settings_and_object_schemas",
+        "ember_glimmer_lifecycle_cleanup",
+        "responsive_behavior",
+        "keyboard_and_focus",
+        "screen_reader_behavior",
+        "rtl_and_logical_layout",
+        "foundation_and_horizon",
+        "embed_exclusion",
+        "attachment_detachment_and_native_updates",
+        "css_scope_and_selector_stability",
+        "uploads_assets_header_icons_and_svg_sprites"
+      ]
+    },
+    "theme": {
+      "indicators": [
+        "about.json with component=false or absent",
+        "theme assets"
+      ],
+      "emphasis": [
+        "complete_theme_rendering",
+        "core_page_coverage",
+        "theme_component_interactions",
+        "responsive_accessibility_and_rtl"
+      ]
+    },
+    "hybrid": {
+      "instruction": "Apply all relevant plugin, theme, and theme-component checks. Do not discard a profile merely because another profile contains the primary entrypoint."
+    }
+  },
+  "review_modes": {
+    "static_review": {
+      "description": "Inspect source, configuration, dependencies, tests, documentation, and release metadata without claiming runtime execution.",
+      "maximum_conclusion": "No required findings identified in the statically reviewed scope; runtime behavior remains unverified where applicable."
+    },
+    "repository_verification": {
+      "description": "Perform static review and execute locally available repository lint, unit, type, formatting, and configuration checks.",
+      "maximum_conclusion": "Repository checks passed in the recorded environment; installation and runtime claims remain bounded by unexecuted checks."
+    },
+    "integrated_verification": {
+      "description": "Install the exact reviewed source in Discourse and exercise applicable frontend, backend, system, browser, lifecycle, and accessibility paths.",
+      "requirements": [
+        "exact_source_identity",
+        "discourse_core_identity",
+        "installation_record",
+        "executed_test_record"
+      ]
+    },
+    "release_readiness": {
+      "description": "Verify the immutable candidate artifact, supported-version matrix, clean installation, upgrade, recovery, rollback, documentation, and publication state.",
+      "requirements": [
+        "tag_or_archive_identity",
+        "archive_hash_when_available",
+        "clean_installation",
+        "supported_version_matrix",
+        "upgrade_from_supported_prior_state",
+        "rollback_or_explicitly_unverified_recovery",
+        "release_blocker_evaluation"
+      ]
+    }
+  },
+  "focus_areas": {
+    "full_scope": {
+      "description": "Apply every rule relevant to the classified artifact and selected review mode."
+    },
+    "security": {
+      "description": "Prioritize trust boundaries, authorization, input handling, output encoding, credentials, privacy, and security-boundary preservation."
+    },
+    "accessibility": {
+      "description": "Prioritize semantics, keyboard interaction, focus management, responsive behavior, RTL behavior, and human assistive-technology evidence."
+    },
+    "compatibility": {
+      "description": "Prioritize supported extension points, dependency constraints, claimed Discourse versions, compatibility branches, and cross-theme behavior."
+    },
+    "migrations": {
+      "description": "Prioritize schema and data transformations, reversibility, upgrade sequencing, retained data, rollback, and recovery."
+    },
+    "release_packaging": {
+      "description": "Prioritize exact artifact identity, installation, generated assets, dependencies, documentation, licensing, publication metadata, upgrade, and rollback evidence."
+    },
+    "custom": {
+      "description": "Use explicitly named user-defined focus areas. State excluded areas and do not generalize the outcome beyond the requested scope."
+    }
+  },
+  "evidence_levels": {
+    "static": "Direct inspection of source, configuration, dependencies, tests, documentation, and release metadata.",
+    "automated": "Recorded execution of applicable automated checks against identified source and environment versions.",
+    "runtime": "Observed behavior in a running Discourse environment using identified source and fixtures.",
+    "human_acceptance": "Controlled human interaction evidence for behavior automation cannot establish, including screen-reader usability."
+  },
+  "rule_statuses": {
+    "pass": "The rule is applicable, important implementation or execution paths were examined at the evidence level required by the selected mode, and no violation was found.",
+    "finding": "Direct evidence demonstrates a violation of the rule.",
+    "not_verified": "The rule is applicable, but a required artifact, environment, execution path, or external condition was unavailable.",
+    "not_applicable": "The capability is absent, and the reviewer established that its absence makes the rule irrelevant."
+  },
+  "severity": {
+    "critical": "Demonstrated behavior likely to allow severe site compromise, secret compromise, broad unauthorized access, or destructive loss affecting production data.",
+    "high": "Significant authorization failure, private-content exposure, dangerous migration behavior, serious secret-handling defect, or persistent corruption risk.",
+    "medium": "Concrete correctness, compatibility, recoverability, privacy, accessibility, or operational problem materially affecting normal installations.",
+    "low": "Limited-scope defect with a real but modest operational effect.",
+    "info": "Non-blocking observation, minor documentation gap, maintainability note, or optional hardening."
+  },
+  "confidence": {
+    "high": "Directly demonstrated in code, tests, or runtime behavior.",
+    "medium": "Strongly supported, but an important runtime condition was not verified.",
+    "low": "Plausible concern requiring verification; do not present it as a required correction unless the uncertainty itself is the defect."
+  },
+  "artifact_identity": {
+    "required_fields": [
+      "repository_url",
+      "artifact_type",
+      "branch",
+      "commit",
+      "tree_hash",
+      "tag",
+      "declared_version",
+      "archive_hash_when_available",
+      "dirty_state",
+      "untracked_relevant_files",
+      "latest_published_release",
+      "differences_from_release",
+      "difference_classification_runtime_tests_packaging_docs"
+    ]
+  },
+  "evidence_reconciliation": {
+    "steps": [
+      "Identify contradictory, historical, or overlapping claims.",
+      "Compare dates, commits, tree hashes, environments, and behavioral scope.",
+      "Determine whether later evidence covers the same behavior and an identical or implementation-equivalent artifact.",
+      "Preserve narrower limitations that remain unresolved.",
+      "Use Not verified when the conflict cannot be resolved."
+    ]
+  },
+  "profile_checklists": {
+    "shared": [
+      "clear_capability",
+      "supported_integration",
+      "input_output_url_validation",
+      "privacy_and_admin_control",
+      "dependency_constraints",
+      "compatibility_claims",
+      "testing_evidence",
+      "documentation_and_support",
+      "licensing_and_distribution",
+      "release_identity",
+      "honest_prerelease_representation"
+    ],
+    "plugin": [
+      "server_authorization",
+      "routes_and_apis",
+      "models_serializers_queries",
+      "migrations_and_rollback",
+      "jobs_retries_idempotency",
+      "synchronization_recovery",
+      "credentials_external_services",
+      "multisite",
+      "enable_disable_uninstall_data_lifecycle"
+    ],
+    "theme_component": [
+      "outlets_connectors_modifiers_plugin_api",
+      "settings_schema_and_limits",
+      "component_lifecycle_cleanup",
+      "responsive_modes",
+      "keyboard_focus_and_dismissal",
+      "screen_reader_acceptance",
+      "rtl",
+      "foundation_horizon",
+      "embed_exclusion",
+      "attach_detach_native_update",
+      "css_scope",
+      "uploads_assets_icons_sprites"
+    ]
+  },
+  "verification_matrix": [
+    {
+      "claim": "installs_successfully",
+      "static": "Metadata and packaging appear complete.",
+      "automated": "Packaging or repository validation succeeds.",
+      "runtime": "The exact artifact installs cleanly in a compatible Discourse environment."
+    },
+    {
+      "claim": "upgrade_is_safe",
+      "static": "Migrations, transforms, settings, and compatibility paths are inspected.",
+      "automated": "Upgrade and migration tests pass.",
+      "runtime": "Upgrade from every materially supported prior state preserves expected behavior and data."
+    },
+    {
+      "claim": "rollback_is_safe",
+      "static": "Reversibility and recovery paths are analyzed.",
+      "automated": "Down-migration or compatibility tests pass when applicable.",
+      "runtime": "Rollback and return-to-current succeed on staging-like infrastructure."
+    },
+    {
+      "claim": "accessible",
+      "static": "Semantics, names, states, keyboard paths, and focus logic are inspected.",
+      "automated": "Applicable accessibility and interaction tests pass.",
+      "runtime": "Keyboard, RTL, responsive, and human screen-reader acceptance is recorded for claimed behavior."
+    },
+    {
+      "claim": "version_compatible",
+      "static": "APIs, dependencies, and compatibility branches are inspected.",
+      "automated": "The declared supported-version matrix passes.",
+      "runtime": "Representative browser smoke testing passes on claimed compatibility lines."
+    },
+    {
+      "claim": "embed_safe",
+      "static": "Embed guards and mount paths are inspected.",
+      "automated": "Embed exclusion tests pass.",
+      "runtime": "A real allowed external embed and applicable full-app embed modes exclude the extension without breaking core controls."
+    }
+  ],
+  "release_blocking_policy": [
+    "Every Critical or High required finding blocks a positive release-readiness conclusion.",
+    "A Medium finding blocks release readiness when it affects installation, authorization, private data, upgrade, rollback, or the primary advertised behavior.",
+    "Unverified clean installation or upgrade behavior prevents a positive release-readiness conclusion.",
+    "Unverified rollback must be disclosed and blocks stable release when persistent data or configuration formats materially change unless an alternative tested recovery path exists.",
+    "Open manual accessibility testing is not automatically a defect, but corresponding accessibility claims remain unverified.",
+    "An experimental release may retain documented limitations when represented honestly and when those limitations do not create unreasonable site risk."
+  ],
+  "rules": [
+    {
+      "id": "01",
+      "title": "Provide a clear and legitimate Discourse capability",
+      "original_markdown": "# 01 — Provide a clear and legitimate Discourse capability\n\nThe plugin should add a coherent capability, integration, administrative workflow, or user experience.\n\nIts purpose must be identifiable from the shipped code and documentation.\n\n## Acceptable\n\n- Integrating Discourse with an external publishing platform.\n- Adding moderation or administrative workflows.\n- Extending topic, post, category, user, group, notification, search, or authentication behavior for a defined use case.\n- Providing a substantial UI or workflow that cannot reasonably be represented as a theme-only customization.\n\n## Requires attention\n\n- A plugin whose advertised functionality is largely absent from the release.\n- Multiple nominally different plugins that contain effectively the same implementation with superficial branding changes.\n- A plugin whose primary purpose could be fulfilled entirely through documented configuration but instead patches core behavior unnecessarily.\n- Functionality unrelated to the stated purpose that materially expands privilege, data collection, or attack surface.\n\nDo not require complexity for its own sake. A narrow plugin can be excellent.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "02",
+      "title": "Integrate through supported Discourse extension points",
+      "original_markdown": "# 02 — Integrate through supported Discourse extension points\n\nThe plugin must behave as a Discourse plugin rather than as a private fork of Discourse.\n\nPrefer supported plugin APIs, plugin registration mechanisms, serializers, callbacks, event hooks, outlets, service APIs, site settings, and other documented extension points.\n\n## Acceptable\n\n- A conventional `plugin.rb` manifest and initializer.\n- Supported server-side plugin APIs.\n- Supported JavaScript plugin APIs and API initializers.\n- Plugin-owned models, services, jobs, controllers, serializers, and migrations.\n- Explicitly registered assets and functionality.\n- Carefully scoped reopenings or extensions where Discourse provides no appropriate higher-level API and compatibility is handled deliberately.\n\n## Required correction\n\n- Modifying files in Discourse core as part of normal installation.\n- Requiring administrators to patch core files manually.\n- Monkey patches that silently replace substantial core behavior without necessity or compatibility safeguards.\n- Depending on undocumented implementation details when a supported API exists.\n- Copying a core component into the plugin and allowing it to drift solely to change a small behavior that has a supported extension mechanism.\n\nWhen lower-level integration is genuinely necessary, verify that the reason is documented and covered by compatibility tests.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every integration point and distinguish documented Plugin API, outlets, connectors, modifiers, and direct or internal framework coupling.",
+        "integrated_verification": "Exercise each material integration point on every claimed compatibility line."
+      }
+    },
+    {
+      "id": "03",
+      "title": "Respect Discourse's data model and lifecycle",
+      "original_markdown": "# 03 — Respect Discourse's data model and lifecycle\n\nPlugin-owned data must integrate safely with Discourse's Rails application and lifecycle.\n\nReview:\n\n- ActiveRecord models\n- associations\n- validations\n- callbacks\n- custom fields\n- plugin stores\n- uploads\n- topic/post/category/user relationships\n- deletion behavior\n- anonymization implications\n- multisite behavior where applicable\n- backup and restore behavior where applicable\n\n## Required correction\n\nFlag demonstrated cases such as:\n\n- orphaned records created by normal deletion flows;\n- destructive callbacks with unintended scope;\n- IDs or relationships assumed to exist without validation;\n- global state used where site-specific state is required;\n- plugin data stored in ephemeral filesystem locations without documentation;\n- direct database manipulation that bypasses necessary application invariants;\n- user-generated data that cannot be associated with its owning site or principal when that relationship matters.\n\nDo not require a database table merely because one could be used. Discourse-supported custom fields or plugin stores may be appropriate for small amounts of data.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "04",
+      "title": "Make migrations safe and reversible in practice",
+      "original_markdown": "# 04 — Make migrations safe and reversible in practice\n\nDatabase migrations receive heightened scrutiny because they execute during deployment and can affect the entire forum.\n\nInspect every migration.\n\nVerify:\n\n- new tables and indexes are sensibly scoped;\n- large-table operations consider production impact;\n- migrations do not assume an empty site;\n- migrations tolerate realistic existing data;\n- data transformations are deliberate;\n- destructive changes have an upgrade strategy;\n- uniqueness constraints match application behavior;\n- rollback assumptions are realistic;\n- migrations do not depend on application code that may later change incompatibly.\n\n## Required correction\n\nExamples include:\n\n- dropping populated columns or tables without an explicit migration strategy;\n- rewriting large core tables synchronously without considering deployment impact;\n- unbounded data migrations likely to lock or exhaust a production database;\n- creating inconsistent records when rerun or partially completed;\n- migration logic dependent on external APIs;\n- silently deleting user or plugin data during an ordinary update.\n\nA migration need not be technically reversible if reversing it would be unsafe or meaningless, but irreversible behavior must be deliberate and appropriately documented.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "usually_not_applicable",
+        "theme": "conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "05",
+      "title": "Enforce authorization on the server",
+      "original_markdown": "# 05 — Enforce authorization on the server\n\nNever rely on hidden UI, JavaScript checks, or route visibility as authorization.\n\nFor every privileged operation, identify:\n\n- the authenticated principal;\n- the required permission;\n- where the server enforces that permission;\n- the affected resource;\n- whether resource ownership or site role is checked.\n\nPay particular attention to:\n\n- admin routes;\n- moderator actions;\n- group-restricted actions;\n- category-restricted operations;\n- API endpoints;\n- bulk operations;\n- background jobs initiated by users;\n- webhook configuration;\n- secret rotation;\n- external publication or synchronization actions.\n\n## Required correction\n\n- An admin-looking endpoint without an admin server-side check.\n- A moderator action callable by ordinary users.\n- An object fetched by user-supplied ID without verifying access to that object.\n- Authorization performed only in Ember code.\n- A background job accepting an untrusted identifier and performing privileged work without rechecking its authority.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "usually_not_applicable",
+        "theme": "conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Trace every privileged server operation to authentication, authorization, and object-scope enforcement.",
+        "integrated_verification": "Add or execute request coverage for unauthorized, ordinary-user, staff, and administrator cases as applicable."
+      }
+    },
+    {
+      "id": "06",
+      "title": "Validate inputs and encode outputs appropriately",
+      "original_markdown": "# 06 — Validate inputs and encode outputs appropriately\n\nTreat parameters, uploaded files, imported data, remote responses, webhook bodies, rendered HTML, Markdown-derived content, and stored external content according to their trust boundary.\n\nReview for:\n\n- parameter validation;\n- strong parameters or equivalent filtering;\n- URL validation;\n- path handling;\n- HTML safety;\n- SQL construction;\n- shell invocation;\n- SSRF exposure;\n- deserialization;\n- file uploads;\n- MIME assumptions;\n- external identifiers;\n- pagination and resource bounds.\n\n## Required correction\n\nExamples include:\n\n- interpolating user input into SQL;\n- passing untrusted input to a shell;\n- marking untrusted HTML safe without sanitization;\n- arbitrary server-side URL fetching without an appropriate trust model;\n- constructing filesystem paths from untrusted values without containment;\n- accepting a remote payload as authoritative without validating the expected schema.\n\nReport the concrete exploitable or correctness path. Do not flag generic keywords without context.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect trust boundaries, schemas, unknown-key behavior, size/cardinality limits, URL schemes, output contexts, and error-message escaping.",
+        "integrated_verification": "Execute representative valid, malformed, oversized, and adversarial inputs through the real boundary."
+      }
+    },
+    {
+      "id": "07",
+      "title": "Handle credentials and external services safely",
+      "original_markdown": "# 07 — Handle credentials and external services safely\n\nPlugins that communicate with another service must make that relationship explicit.\n\nReview:\n\n- API tokens;\n- webhook secrets;\n- OAuth credentials;\n- connection secrets;\n- signing keys;\n- administrator-supplied URLs;\n- outbound requests;\n- inbound webhook authentication;\n- retry policy;\n- timeout behavior;\n- logging;\n- secret rotation;\n- failure modes.\n\n## Acceptable\n\n- Secrets entered through an appropriate administrative/configuration mechanism.\n- Environment-backed secrets where appropriate.\n- Credentials excluded from source control.\n- Signed or authenticated inbound requests.\n- Bounded network timeouts.\n- Errors that preserve diagnostic value without exposing credentials.\n\n## Required correction\n\n- Hard-coded production credentials.\n- Tokens committed to the repository.\n- Secrets returned through ordinary serializers or rendered into pages.\n- Full authorization headers or secret values written to logs.\n- Unauthenticated inbound operations capable of changing site state.\n- External calls without reasonable timeouts.\n- Silent transmission of forum or user data unrelated to the documented feature.\n\nDocument what data leaves the Discourse instance and why.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "usually_not_applicable",
+        "theme": "conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "08",
+      "title": "Preserve privacy and administrator control",
+      "original_markdown": "# 08 — Preserve privacy and administrator control\n\nA plugin should not unexpectedly expand the audience for private Discourse data.\n\nReview behavior involving:\n\n- private messages;\n- staff-only content;\n- secure categories;\n- group-restricted topics;\n- deleted or hidden content;\n- email addresses;\n- IP addresses;\n- user profile fields;\n- authentication data;\n- API keys;\n- uploaded files;\n- logs;\n- analytics;\n- third-party services.\n\n## Required correction\n\n- Sending private content to a third party without the feature requiring it and without administrator awareness.\n- Publishing restricted category content through a public integration.\n- Leaking staff-only fields through serializers.\n- Tracking users through a third party without disclosure where disclosure is appropriate.\n- Retaining secrets or sensitive payloads in ordinary diagnostic logs.\n\nFor content bridges and syndication plugins, explicitly trace the authorization boundary between source content and every destination.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "09",
+      "title": "Use background work appropriately",
+      "original_markdown": "# 09 — Use background work appropriately\n\nPotentially slow, retryable, scheduled, or external work should not unnecessarily block web requests.\n\nInspect Sidekiq jobs, scheduled jobs, event-driven jobs, and external synchronization flows.\n\nVerify:\n\n- jobs are idempotent where retries are possible;\n- repeated delivery does not corrupt state;\n- retry behavior is bounded or deliberate;\n- jobs do not silently swallow permanent failures;\n- locks or leases do not create permanent dead states;\n- external work has timeouts;\n- jobs operate on the correct site in multisite environments;\n- enqueueing cannot be abused to create unbounded work.\n\n## Required correction\n\nExamples include:\n\n- a request waiting indefinitely on an external service;\n- duplicate retries creating duplicate remote objects;\n- jobs that assume a record still exists;\n- a failed lease or lock that permanently prevents later processing;\n- retry loops with no meaningful bound or backoff;\n- remote state considered committed before the local transaction is durable, when this can create inconsistency.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "usually_not_applicable",
+        "theme": "conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "10",
+      "title": "Make synchronization and distributed operations recoverable",
+      "original_markdown": "# 10 — Make synchronization and distributed operations recoverable\n\nApply this rule when the plugin synchronizes Discourse with another system.\n\nTreat cross-system publication as a distributed transaction even if no formal transaction protocol is used.\n\nReview:\n\n- idempotency keys;\n- revisions;\n- acknowledgement state;\n- retry semantics;\n- partial success;\n- stale claims;\n- leases;\n- conflict handling;\n- deletion;\n- re-publication;\n- credential failures;\n- remote outages;\n- rollback or reconciliation.\n\nA network call succeeding does not prove that the whole workflow succeeded.\n\n## Required correction\n\nFlag demonstrated states where:\n\n- a crash can permanently lose pending work;\n- retries create duplicate remote resources;\n- local state records success before the remote operation is durable;\n- remote success can occur but never be acknowledged or reconciled locally;\n- stale leases cannot recover;\n- a failed publication destroys the previously valid representation;\n- deletion in one system unpredictably destroys unrelated data in another.\n\nRequire an explicit recovery path for realistic partial failures.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "usually_not_applicable",
+        "theme": "conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "11",
+      "title": "Build administrator-facing features as native Discourse administration",
+      "original_markdown": "# 11 — Build administrator-facing features as native Discourse administration\n\nIf the plugin exposes settings or controls to administrators, they should behave like part of Discourse rather than an unrelated embedded application.\n\nReview:\n\n- setting names and descriptions;\n- grouping;\n- validation;\n- enable/disable behavior;\n- admin routes;\n- loading states;\n- success and error feedback;\n- destructive-action confirmation;\n- accessibility;\n- translation;\n- responsiveness.\n\n## Required correction\n\nExamples include:\n\n- controls that report success when the server rejected the action;\n- critical configuration stored only in browser-local state;\n- untranslated user-facing strings where localization is expected;\n- destructive operations without adequate confirmation;\n- settings that appear to disable the plugin while background behavior continues unexpectedly.\n\nA plugin does not need an admin UI when configuration genuinely belongs elsewhere.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "12",
+      "title": "Maintain coherent user-facing behavior",
+      "original_markdown": "# 12 — Maintain coherent user-facing behavior\n\nFor plugins that alter the public or authenticated user interface, test more than the ideal screenshot.\n\nVerify relevant states:\n\n- desktop;\n- narrow/mobile viewport;\n- keyboard navigation;\n- focus behavior;\n- long titles or usernames;\n- empty state;\n- loading state;\n- permission denied;\n- network failure;\n- deleted content;\n- missing images or optional fields;\n- disabled plugin setting;\n- anonymous versus authenticated use.\n\nVisible behavior should fit reasonably within Discourse's existing interaction model unless departure is intentional.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect semantics, keyboard paths, focus behavior, responsive modes, RTL-sensitive layout, and accessible names.",
+        "integrated_verification": "Perform keyboard and responsive runtime checks; human screen-reader and complete RTL evidence are required for corresponding accessibility claims."
+      }
+    },
+    {
+      "id": "13",
+      "title": "Avoid fragile frontend integration",
+      "original_markdown": "# 13 — Avoid fragile frontend integration\n\nUse current supported Discourse frontend extension mechanisms.\n\nReview:\n\n- API initializers;\n- plugin outlets;\n- registered transformers or APIs;\n- Ember components;\n- Glimmer components;\n- services;\n- route extensions;\n- admin frontend code;\n- deprecated APIs;\n- DOM mutation.\n\n## Required correction\n\nExamples include:\n\n- relying on generated CSS class names as an application API;\n- global DOM polling when a plugin API or outlet exists;\n- direct mutation of another component's internal DOM structure where a supported API exists;\n- using removed or deprecated APIs while claiming support for current Discourse;\n- leaking event listeners or timers across route transitions.\n\nDirect DOM work is not automatically wrong. Flag it only where it produces a concrete compatibility or lifecycle risk.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "14",
+      "title": "Make site settings complete and safe",
+      "original_markdown": "# 14 — Make site settings complete and safe\n\nInspect `config/settings.yml` and every setting consumer.\n\nVerify:\n\n- defaults are safe;\n- names are clear;\n- setting types match usage;\n- secrets are not exposed through inappropriate settings mechanisms;\n- disabled-state behavior is coherent;\n- setting changes take effect as documented;\n- required settings are validated before performing irreversible or external work.\n\nA plugin-wide enable setting should prevent the plugin's substantive behavior when disabled unless the exception is deliberate and documented.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "15",
+      "title": "Keep API contracts explicit",
+      "original_markdown": "# 15 — Keep API contracts explicit\n\nFor plugin HTTP APIs, webhooks, or external adapter APIs, review the contract as a product surface.\n\nVerify:\n\n- versioning strategy where compatibility matters;\n- authentication;\n- request schema;\n- response schema;\n- error format;\n- pagination;\n- idempotency;\n- content type;\n- rate/abuse considerations;\n- backward compatibility;\n- deprecation behavior.\n\n## Required correction\n\nExamples include:\n\n- an endpoint advertised to external consumers whose response shape changes incidentally with an internal serializer;\n- returning sensitive model attributes because the complete model was serialized by convenience;\n- ambiguous success responses for partially completed operations;\n- undocumented destructive behavior.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "usually_not_applicable",
+        "theme": "conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "16",
+      "title": "Test the behaviors that can break customer sites",
+      "original_markdown": "# 16 — Test the behaviors that can break customer sites\n\nAutomated tests should correspond to the plugin's actual risk.\n\nCheck for relevant:\n\n- model specs;\n- service specs;\n- request/controller specs;\n- authorization tests;\n- job tests;\n- migration tests;\n- serializer tests;\n- frontend acceptance tests;\n- admin tests;\n- external-service tests using controlled fakes;\n- failure-path tests;\n- upgrade/regression tests.\n\nTests should cover consequential negative paths, not only successful creation.\n\nHigh-risk behavior without meaningful regression tests is a release-readiness concern even when no present bug has been demonstrated.\n\nDistinguish:\n\n- `Defect`: an incorrect behavior demonstrated by evidence.\n- `Test gap`: important behavior lacks reasonable automated coverage.\n\nDo not report a test gap as proof that the implementation is broken.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "repository_verification": "Execute focused tests for site-breaking behavior when the required local toolchain is available and record skipped suites explicitly.",
+        "integrated_verification": "Execute applicable frontend, backend, system, migration, and browser coverage against the reviewed source."
+      }
+    },
+    {
+      "id": "17",
+      "title": "Pass the standard Discourse plugin quality checks",
+      "original_markdown": "# 17 — Pass the standard Discourse plugin quality checks\n\nWhen the repository is compatible with the current Discourse plugin tooling, run the checks provided by the plugin itself and the standard Discourse plugin workflow where practical.\n\nReview, where present:\n\n- Ruby tests/specs;\n- frontend tests;\n- JavaScript/TypeScript lint;\n- template/Glimmer checks;\n- CSS/SCSS lint;\n- formatting;\n- type checking;\n- plugin CI workflow.\n\nDo not substitute lint for behavioral testing.\n\nIf a standard check cannot run because the repository intentionally supports an older Discourse generation, record the supported version and use the matching toolchain where feasible.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "repository_verification": "Do not pass solely because workflow definitions exist; record an applicable successful execution or mark the rule Not verified.",
+        "release_readiness": "Run the standard plugin or theme workflow against the exact candidate and each claimed supported line."
+      }
+    },
+    {
+      "id": "18",
+      "title": "Ship an installable release",
+      "original_markdown": "# 18 — Ship an installable release\n\nReview the actual release artifact or tagged commit whenever possible.\n\nVerify installation according to the documented instructions.\n\nCheck:\n\n- the plugin directory is self-contained;\n- `plugin.rb` metadata is accurate;\n- dependencies are declared;\n- required assets exist;\n- production does not depend on the author's local checkout;\n- development-only symlinks are absent from the shipped artifact;\n- build steps are reproducible;\n- required settings are documented;\n- restart/rebuild requirements are documented;\n- supported Discourse versions are stated honestly.\n\n## Required correction\n\n- absolute local paths;\n- references to unpublished local packages;\n- missing generated assets required in production;\n- undeclared runtime dependencies;\n- installation instructions that do not install the submitted release;\n- a tagged release whose bytes differ materially from the reviewed source without explanation.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "integrated_verification": "Install the exact reviewed repository ref or archive into a clean compatible Discourse environment.",
+        "release_readiness": "Install the same immutable tag or archive users will receive and retain its hash and environment identity."
+      }
+    },
+    {
+      "id": "19",
+      "title": "Make upgrades safe",
+      "original_markdown": "# 19 — Make upgrades safe\n\nA plugin update must preserve the site's valid existing state unless a breaking change is deliberately documented and supported by an explicit migration path.\n\nTest representative upgrades where the plugin stores meaningful data.\n\nReview:\n\n- database migrations;\n- renamed settings;\n- renamed classes or identifiers;\n- serialized data;\n- plugin-store keys;\n- custom-field names;\n- external API revisions;\n- background work already in flight;\n- removed features;\n- changed permissions.\n\n## Required correction\n\n- an update silently loses configuration;\n- stored records become unreadable without migration;\n- in-flight jobs become permanently invalid;\n- a renamed setting resets security-sensitive behavior unexpectedly;\n- the plugin requires administrators to delete existing plugin data merely to upgrade normally.\n\nExperimental software may make breaking changes, but those changes still need to be intentional and documented.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect migrations, settings transformations, compatibility branches, and documented recovery paths.",
+        "release_readiness": "Upgrade from every materially supported prior state, verify retained behavior/data, perform rollback when claimed, and return to the current channel."
+      }
+    },
+    {
+      "id": "20",
+      "title": "Handle disablement and removal predictably",
+      "original_markdown": "# 20 — Handle disablement and removal predictably\n\nDetermine what happens when the plugin is disabled or removed.\n\nDisabling the plugin should not leave unexpected active behavior.\n\nReview:\n\n- scheduled jobs;\n- external callbacks;\n- webhooks;\n- routes;\n- assets;\n- plugin records;\n- user-visible remnants;\n- remote integrations.\n\nDo not require uninstall to delete user data automatically. Preserving data is often safer.\n\nIf permanent cleanup is provided, destructive cleanup must be explicit.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "21",
+      "title": "Maintain compatibility deliberately",
+      "original_markdown": "# 21 — Maintain compatibility deliberately\n\nDiscourse changes continuously.\n\nThe plugin must make a support claim that can be understood and tested.\n\nLook for:\n\n- minimum supported Discourse version;\n- tests against an appropriate branch or version;\n- deprecated API usage;\n- compatibility shims;\n- version guards;\n- frontend API compatibility;\n- Ruby/Rails assumptions;\n- database assumptions.\n\nDo not require support for all Discourse versions.\n\nA narrow support window is acceptable when it is clearly stated.\n\nDo not accept a broad compatibility claim solely because installation succeeds.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Separate minimum supported, supported, tested, and merely known-working versions.",
+        "release_readiness": "Execute the declared supported-version matrix or narrow the compatibility claim to the versions actually tested."
+      }
+    },
+    {
+      "id": "22",
+      "title": "Declare and constrain dependencies",
+      "original_markdown": "# 22 — Declare and constrain dependencies\n\nReview Ruby, JavaScript, system, and service dependencies.\n\nVerify:\n\n- they are actually required;\n- their licenses permit distribution/use;\n- production dependencies are distinguished from development dependencies;\n- versions are constrained appropriately;\n- abandoned or unusually privileged dependencies receive appropriate scrutiny;\n- external SaaS requirements are disclosed.\n\nDo not require exact pinning of every dependency. Evaluate whether the constraint strategy provides reproducible and maintainable behavior.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "23",
+      "title": "Respect Discourse security boundaries",
+      "original_markdown": "# 23 — Respect Discourse security boundaries\n\nA plugin must not deliberately bypass security controls provided by Discourse.\n\nScrutinize behavior involving:\n\n- staff permissions;\n- category security;\n- secure uploads;\n- authentication;\n- API scopes;\n- user impersonation;\n- rate limits;\n- CSRF protection;\n- content visibility;\n- deleted content;\n- trust-level restrictions.\n\n## Required correction\n\nExamples include:\n\n- making staff-only information public;\n- bypassing category permissions to simplify an integration;\n- disabling CSRF checks without an appropriate alternative authentication boundary;\n- granting admin-equivalent capability to an ordinary authenticated user;\n- exposing protected uploads through a public proxy endpoint.\n\nOverlapping with a built-in Discourse feature is not itself a problem.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "24",
+      "title": "Do not conceal operational behavior",
+      "original_markdown": "# 24 — Do not conceal operational behavior\n\nAdministrators should be able to understand significant behavior caused by the plugin.\n\nDocument, where applicable:\n\n- external destinations;\n- scheduled processing;\n- data retention;\n- destructive actions;\n- API/webhook requirements;\n- expected network access;\n- generated users or groups;\n- database growth;\n- logging;\n- backup considerations;\n- required infrastructure.\n\nHidden telemetry, undocumented outbound publication, or unexpected modification of forum state is a release blocker.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "25",
+      "title": "Provide useful documentation and a support path",
+      "original_markdown": "# 25 — Provide useful documentation and a support path\n\nA production administrator should not have to reverse-engineer the plugin to operate it.\n\nDocumentation should cover what is relevant:\n\n- purpose;\n- supported Discourse versions;\n- installation;\n- upgrade;\n- configuration;\n- required permissions;\n- external service setup;\n- security model;\n- normal operation;\n- troubleshooting;\n- backup/recovery considerations;\n- removal/disablement;\n- known limitations;\n- breaking changes;\n- support channel.\n\nCode comments do not replace operator documentation.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "26",
+      "title": "Represent the plugin honestly",
+      "original_markdown": "# 26 — Represent the plugin honestly\n\nDocumentation, screenshots, topic listings, demos, and release notes must describe the shipped release.\n\n## Required correction\n\n- screenshots of features absent from the release;\n- claiming compatibility that was not implemented;\n- calling an experimental integration production-ready without describing known constraints;\n- failing to disclose a required paid third-party service;\n- describing mock UI as completed functionality;\n- claiming that an external system remains synchronized when synchronization is only one-way.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "27",
+      "title": "Have rights to distribute the release",
+      "original_markdown": "# 27 — Have rights to distribute the release\n\nInspect licenses and included third-party assets where material.\n\nThe plugin should have the right to distribute:\n\n- source code;\n- copied libraries;\n- icons;\n- fonts;\n- images;\n- fixtures;\n- demo content;\n- generated bundles that contain third-party work.\n\nRequired notices must remain intact.\n\nDo not treat the presence of third-party code as a problem by itself.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "28",
+      "title": "Keep repository and release hygiene appropriate",
+      "original_markdown": "# 28 — Keep repository and release hygiene appropriate\n\nCheck for accidentally shipped development material such as:\n\n- credentials;\n- `.env` files;\n- database dumps;\n- production logs;\n- private certificates;\n- local absolute paths;\n- editor swap files;\n- temporary archives;\n- test secrets that are actually live;\n- customer data;\n- large unrelated binaries.\n\nExample and fixture credentials are acceptable when clearly nonfunctional and scoped for testing.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "29",
+      "title": "Treat experimental and pre-release plugins honestly",
+      "original_markdown": "# 29 — Treat experimental and pre-release plugins honestly\n\nAlpha, beta, preview, and experimental plugins are reviewable.\n\nPre-release status is not itself a defect.\n\nVerify that:\n\n- the release is clearly labeled;\n- known limitations are disclosed;\n- installation is reproducible;\n- migration and data-safety behavior is still responsible;\n- breaking-change expectations are stated;\n- production suitability is not overstated.\n\nExperimental status never excuses credential exposure, authorization failures, destructive updates, or inability to recover from foreseeable partial failures.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    },
+    {
+      "id": "30",
+      "title": "Review removal of obsolete compatibility code",
+      "original_markdown": "# 30 — Review removal of obsolete compatibility code\n\nCompatibility code can become a source of hidden defects.\n\nWhen a plugin supports multiple generations of Discourse, determine whether version branches and fallback paths are still reachable and tested.\n\nDo not require immediate removal solely because code is old.\n\nFlag compatibility code when it:\n\n- invokes APIs absent from every claimed supported version;\n- changes security behavior inconsistently;\n- masks failures;\n- prevents current behavior from being tested;\n- preserves an obsolete data representation with no migration strategy.",
+      "applicability": {
+        "plugin": "applicable_unless_capability_absent",
+        "theme_component": "applicable_or_conditional",
+        "theme": "applicable_or_conditional",
+        "hybrid": "apply_every_relevant_profile"
+      },
+      "evidence_thresholds": {
+        "static_review": "Inspect every applicable implementation path and cite direct evidence for the disposition.",
+        "integrated_verification": "Exercise material runtime paths when the selected review mode requires runtime evidence."
+      }
+    }
+  ],
+  "report_contract": {
+    "required_order": [
+      "review_scope",
+      "summary",
+      "required_findings",
+      "test_and_verification_gaps",
+      "optional_improvements",
+      "rule_matrix"
+    ],
+    "review_scope_fields": [
+      "review_mode",
+      "focus_areas",
+      "artifact_type",
+      "artifact_identity",
+      "claimed_compatibility",
+      "files_and_artifacts_reviewed",
+      "commands_executed",
+      "environments_used",
+      "important_areas_not_tested"
+    ],
+    "summary_fields": [
+      "critical_count",
+      "high_count",
+      "medium_count",
+      "low_count",
+      "info_count",
+      "unverified_material_concern_count",
+      "overall_confidence",
+      "release_readiness_status_when_requested"
+    ],
+    "finding_fields": [
+      "id",
+      "severity",
+      "rule_id",
+      "title",
+      "evidence",
+      "observed",
+      "impact",
+      "required_change",
+      "verification",
+      "confidence",
+      "release_blocking"
+    ],
+    "rule_matrix_fields": [
+      "rule_id",
+      "status",
+      "evidence",
+      "reason",
+      "evidence_level"
+    ],
+    "json_record_example": {
+      "rule_id": "19",
+      "status": "not_verified",
+      "severity": null,
+      "confidence": "medium",
+      "release_blocking": true,
+      "evidence": [
+        "docs/MIGRATION.md:131"
+      ],
+      "reason": "Complete pin-and-return rollback was not executed."
+    }
+  },
+  "outcome_language": {
+    "allowed_examples": [
+      "No required findings were identified in the reviewed scope.",
+      "Three required corrections were identified.",
+      "Release readiness remains unverified because upgrade testing was not performed.",
+      "The extension passed the repository's automated test suite in the recorded environment."
+    ],
+    "prohibited_claims": [
+      "Discourse approved",
+      "Marketplace approved",
+      "Officially safe",
+      "Secure",
+      "Production certified",
+      "Guaranteed compatible"
+    ]
+  },
+  "authoritative_sources": {
+    "instruction": "When current Discourse behavior is material, consult current official documentation and source. Prefer the behavior of the version actually claimed when it differs from current main.",
+    "preferred": [
+      "Discourse core documentation",
+      "Discourse core repository",
+      "Official Discourse plugin skeleton",
+      "Current Plugin API documentation and source",
+      "Official Meta Discourse developer documentation",
+      "Official examples maintained by Discourse"
+    ]
+  },
+  "original_document_sections": [
+    {
+      "level": 1,
+      "heading": "Discourse Plugin Review",
+      "body_markdown": "Review the Discourse plugin against the rules in this skill.\n\nThe goal is to determine whether the plugin is a well-behaved Discourse extension that an administrator can install, configure, update, operate, and remove without unreasonable risk to the forum or its data.\n\nThis is an evidence-based engineering review.\n\nDo not approve a plugin merely because its tests pass, its code looks conventional, an automated scanner is clean, or it works on the author's development instance.\n\nDo not reject a plugin because it uses AI-generated code, is small, is experimental, or supports only a limited range of Discourse versions.\n\nEvaluate the product that actually ships.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Review principles",
+          "body_markdown": "For every finding:\n\n1. Cite the exact file and line, class, method, route, setting, migration, test, or observable behavior that supports the finding.\n2. Explain the concrete effect on a Discourse site.\n3. Identify the applicable numbered rule.\n4. Distinguish a required correction from an optional improvement.\n5. Do not speculate where evidence is missing.\n6. Mark anything you could not verify as `Not verified`.\n7. Prefer reproducible evidence over stylistic preference.\n\nDo not modify the plugin unless explicitly asked to fix findings.\n\nDo not claim that this review constitutes approval by Discourse, Discourse.org, CDCK, a marketplace, a hosting provider, or any other organization.\n\nDo not describe this review as a comprehensive security audit.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "Review scope",
+      "body_markdown": "Inspect, when present:\n\n- `plugin.rb`\n- `README.md`\n- `LICENSE`\n- `CHANGELOG.md` or equivalent release history\n- `config/settings.yml`\n- `config/locales/`\n- `app/`\n- `lib/`\n- `db/migrate/`\n- `jobs/`\n- `services/`\n- `serializers/`\n- `controllers/`\n- `models/`\n- `assets/javascripts/`\n- `assets/stylesheets/`\n- `admin/`\n- `test/`\n- `spec/`\n- `package.json`\n- lockfiles\n- CI workflows\n- Docker or installation scripts\n- external-service integrations\n- generated assets included in the release\n- the exact tagged/archive release when available\n\nAlso inspect plugin dependencies and any documented minimum or maximum Discourse version.\n\nIf reviewing a working tree, identify untracked files relevant to the plugin before declaring the review complete.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "01 — Provide a clear and legitimate Discourse capability",
+      "body_markdown": "The plugin should add a coherent capability, integration, administrative workflow, or user experience.\n\nIts purpose must be identifiable from the shipped code and documentation.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Acceptable",
+          "body_markdown": "- Integrating Discourse with an external publishing platform.\n- Adding moderation or administrative workflows.\n- Extending topic, post, category, user, group, notification, search, or authentication behavior for a defined use case.\n- Providing a substantial UI or workflow that cannot reasonably be represented as a theme-only customization.",
+          "children": []
+        },
+        {
+          "level": 2,
+          "heading": "Requires attention",
+          "body_markdown": "- A plugin whose advertised functionality is largely absent from the release.\n- Multiple nominally different plugins that contain effectively the same implementation with superficial branding changes.\n- A plugin whose primary purpose could be fulfilled entirely through documented configuration but instead patches core behavior unnecessarily.\n- Functionality unrelated to the stated purpose that materially expands privilege, data collection, or attack surface.\n\nDo not require complexity for its own sake. A narrow plugin can be excellent.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "02 — Integrate through supported Discourse extension points",
+      "body_markdown": "The plugin must behave as a Discourse plugin rather than as a private fork of Discourse.\n\nPrefer supported plugin APIs, plugin registration mechanisms, serializers, callbacks, event hooks, outlets, service APIs, site settings, and other documented extension points.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Acceptable",
+          "body_markdown": "- A conventional `plugin.rb` manifest and initializer.\n- Supported server-side plugin APIs.\n- Supported JavaScript plugin APIs and API initializers.\n- Plugin-owned models, services, jobs, controllers, serializers, and migrations.\n- Explicitly registered assets and functionality.\n- Carefully scoped reopenings or extensions where Discourse provides no appropriate higher-level API and compatibility is handled deliberately.",
+          "children": []
+        },
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "- Modifying files in Discourse core as part of normal installation.\n- Requiring administrators to patch core files manually.\n- Monkey patches that silently replace substantial core behavior without necessity or compatibility safeguards.\n- Depending on undocumented implementation details when a supported API exists.\n- Copying a core component into the plugin and allowing it to drift solely to change a small behavior that has a supported extension mechanism.\n\nWhen lower-level integration is genuinely necessary, verify that the reason is documented and covered by compatibility tests.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "03 — Respect Discourse's data model and lifecycle",
+      "body_markdown": "Plugin-owned data must integrate safely with Discourse's Rails application and lifecycle.\n\nReview:\n\n- ActiveRecord models\n- associations\n- validations\n- callbacks\n- custom fields\n- plugin stores\n- uploads\n- topic/post/category/user relationships\n- deletion behavior\n- anonymization implications\n- multisite behavior where applicable\n- backup and restore behavior where applicable",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "Flag demonstrated cases such as:\n\n- orphaned records created by normal deletion flows;\n- destructive callbacks with unintended scope;\n- IDs or relationships assumed to exist without validation;\n- global state used where site-specific state is required;\n- plugin data stored in ephemeral filesystem locations without documentation;\n- direct database manipulation that bypasses necessary application invariants;\n- user-generated data that cannot be associated with its owning site or principal when that relationship matters.\n\nDo not require a database table merely because one could be used. Discourse-supported custom fields or plugin stores may be appropriate for small amounts of data.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "04 — Make migrations safe and reversible in practice",
+      "body_markdown": "Database migrations receive heightened scrutiny because they execute during deployment and can affect the entire forum.\n\nInspect every migration.\n\nVerify:\n\n- new tables and indexes are sensibly scoped;\n- large-table operations consider production impact;\n- migrations do not assume an empty site;\n- migrations tolerate realistic existing data;\n- data transformations are deliberate;\n- destructive changes have an upgrade strategy;\n- uniqueness constraints match application behavior;\n- rollback assumptions are realistic;\n- migrations do not depend on application code that may later change incompatibly.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "Examples include:\n\n- dropping populated columns or tables without an explicit migration strategy;\n- rewriting large core tables synchronously without considering deployment impact;\n- unbounded data migrations likely to lock or exhaust a production database;\n- creating inconsistent records when rerun or partially completed;\n- migration logic dependent on external APIs;\n- silently deleting user or plugin data during an ordinary update.\n\nA migration need not be technically reversible if reversing it would be unsafe or meaningless, but irreversible behavior must be deliberate and appropriately documented.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "05 — Enforce authorization on the server",
+      "body_markdown": "Never rely on hidden UI, JavaScript checks, or route visibility as authorization.\n\nFor every privileged operation, identify:\n\n- the authenticated principal;\n- the required permission;\n- where the server enforces that permission;\n- the affected resource;\n- whether resource ownership or site role is checked.\n\nPay particular attention to:\n\n- admin routes;\n- moderator actions;\n- group-restricted actions;\n- category-restricted operations;\n- API endpoints;\n- bulk operations;\n- background jobs initiated by users;\n- webhook configuration;\n- secret rotation;\n- external publication or synchronization actions.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "- An admin-looking endpoint without an admin server-side check.\n- A moderator action callable by ordinary users.\n- An object fetched by user-supplied ID without verifying access to that object.\n- Authorization performed only in Ember code.\n- A background job accepting an untrusted identifier and performing privileged work without rechecking its authority.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "06 — Validate inputs and encode outputs appropriately",
+      "body_markdown": "Treat parameters, uploaded files, imported data, remote responses, webhook bodies, rendered HTML, Markdown-derived content, and stored external content according to their trust boundary.\n\nReview for:\n\n- parameter validation;\n- strong parameters or equivalent filtering;\n- URL validation;\n- path handling;\n- HTML safety;\n- SQL construction;\n- shell invocation;\n- SSRF exposure;\n- deserialization;\n- file uploads;\n- MIME assumptions;\n- external identifiers;\n- pagination and resource bounds.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "Examples include:\n\n- interpolating user input into SQL;\n- passing untrusted input to a shell;\n- marking untrusted HTML safe without sanitization;\n- arbitrary server-side URL fetching without an appropriate trust model;\n- constructing filesystem paths from untrusted values without containment;\n- accepting a remote payload as authoritative without validating the expected schema.\n\nReport the concrete exploitable or correctness path. Do not flag generic keywords without context.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "07 — Handle credentials and external services safely",
+      "body_markdown": "Plugins that communicate with another service must make that relationship explicit.\n\nReview:\n\n- API tokens;\n- webhook secrets;\n- OAuth credentials;\n- connection secrets;\n- signing keys;\n- administrator-supplied URLs;\n- outbound requests;\n- inbound webhook authentication;\n- retry policy;\n- timeout behavior;\n- logging;\n- secret rotation;\n- failure modes.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Acceptable",
+          "body_markdown": "- Secrets entered through an appropriate administrative/configuration mechanism.\n- Environment-backed secrets where appropriate.\n- Credentials excluded from source control.\n- Signed or authenticated inbound requests.\n- Bounded network timeouts.\n- Errors that preserve diagnostic value without exposing credentials.",
+          "children": []
+        },
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "- Hard-coded production credentials.\n- Tokens committed to the repository.\n- Secrets returned through ordinary serializers or rendered into pages.\n- Full authorization headers or secret values written to logs.\n- Unauthenticated inbound operations capable of changing site state.\n- External calls without reasonable timeouts.\n- Silent transmission of forum or user data unrelated to the documented feature.\n\nDocument what data leaves the Discourse instance and why.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "08 — Preserve privacy and administrator control",
+      "body_markdown": "A plugin should not unexpectedly expand the audience for private Discourse data.\n\nReview behavior involving:\n\n- private messages;\n- staff-only content;\n- secure categories;\n- group-restricted topics;\n- deleted or hidden content;\n- email addresses;\n- IP addresses;\n- user profile fields;\n- authentication data;\n- API keys;\n- uploaded files;\n- logs;\n- analytics;\n- third-party services.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "- Sending private content to a third party without the feature requiring it and without administrator awareness.\n- Publishing restricted category content through a public integration.\n- Leaking staff-only fields through serializers.\n- Tracking users through a third party without disclosure where disclosure is appropriate.\n- Retaining secrets or sensitive payloads in ordinary diagnostic logs.\n\nFor content bridges and syndication plugins, explicitly trace the authorization boundary between source content and every destination.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "09 — Use background work appropriately",
+      "body_markdown": "Potentially slow, retryable, scheduled, or external work should not unnecessarily block web requests.\n\nInspect Sidekiq jobs, scheduled jobs, event-driven jobs, and external synchronization flows.\n\nVerify:\n\n- jobs are idempotent where retries are possible;\n- repeated delivery does not corrupt state;\n- retry behavior is bounded or deliberate;\n- jobs do not silently swallow permanent failures;\n- locks or leases do not create permanent dead states;\n- external work has timeouts;\n- jobs operate on the correct site in multisite environments;\n- enqueueing cannot be abused to create unbounded work.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "Examples include:\n\n- a request waiting indefinitely on an external service;\n- duplicate retries creating duplicate remote objects;\n- jobs that assume a record still exists;\n- a failed lease or lock that permanently prevents later processing;\n- retry loops with no meaningful bound or backoff;\n- remote state considered committed before the local transaction is durable, when this can create inconsistency.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "10 — Make synchronization and distributed operations recoverable",
+      "body_markdown": "Apply this rule when the plugin synchronizes Discourse with another system.\n\nTreat cross-system publication as a distributed transaction even if no formal transaction protocol is used.\n\nReview:\n\n- idempotency keys;\n- revisions;\n- acknowledgement state;\n- retry semantics;\n- partial success;\n- stale claims;\n- leases;\n- conflict handling;\n- deletion;\n- re-publication;\n- credential failures;\n- remote outages;\n- rollback or reconciliation.\n\nA network call succeeding does not prove that the whole workflow succeeded.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "Flag demonstrated states where:\n\n- a crash can permanently lose pending work;\n- retries create duplicate remote resources;\n- local state records success before the remote operation is durable;\n- remote success can occur but never be acknowledged or reconciled locally;\n- stale leases cannot recover;\n- a failed publication destroys the previously valid representation;\n- deletion in one system unpredictably destroys unrelated data in another.\n\nRequire an explicit recovery path for realistic partial failures.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "11 — Build administrator-facing features as native Discourse administration",
+      "body_markdown": "If the plugin exposes settings or controls to administrators, they should behave like part of Discourse rather than an unrelated embedded application.\n\nReview:\n\n- setting names and descriptions;\n- grouping;\n- validation;\n- enable/disable behavior;\n- admin routes;\n- loading states;\n- success and error feedback;\n- destructive-action confirmation;\n- accessibility;\n- translation;\n- responsiveness.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "Examples include:\n\n- controls that report success when the server rejected the action;\n- critical configuration stored only in browser-local state;\n- untranslated user-facing strings where localization is expected;\n- destructive operations without adequate confirmation;\n- settings that appear to disable the plugin while background behavior continues unexpectedly.\n\nA plugin does not need an admin UI when configuration genuinely belongs elsewhere.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "12 — Maintain coherent user-facing behavior",
+      "body_markdown": "For plugins that alter the public or authenticated user interface, test more than the ideal screenshot.\n\nVerify relevant states:\n\n- desktop;\n- narrow/mobile viewport;\n- keyboard navigation;\n- focus behavior;\n- long titles or usernames;\n- empty state;\n- loading state;\n- permission denied;\n- network failure;\n- deleted content;\n- missing images or optional fields;\n- disabled plugin setting;\n- anonymous versus authenticated use.\n\nVisible behavior should fit reasonably within Discourse's existing interaction model unless departure is intentional.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "13 — Avoid fragile frontend integration",
+      "body_markdown": "Use current supported Discourse frontend extension mechanisms.\n\nReview:\n\n- API initializers;\n- plugin outlets;\n- registered transformers or APIs;\n- Ember components;\n- Glimmer components;\n- services;\n- route extensions;\n- admin frontend code;\n- deprecated APIs;\n- DOM mutation.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "Examples include:\n\n- relying on generated CSS class names as an application API;\n- global DOM polling when a plugin API or outlet exists;\n- direct mutation of another component's internal DOM structure where a supported API exists;\n- using removed or deprecated APIs while claiming support for current Discourse;\n- leaking event listeners or timers across route transitions.\n\nDirect DOM work is not automatically wrong. Flag it only where it produces a concrete compatibility or lifecycle risk.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "14 — Make site settings complete and safe",
+      "body_markdown": "Inspect `config/settings.yml` and every setting consumer.\n\nVerify:\n\n- defaults are safe;\n- names are clear;\n- setting types match usage;\n- secrets are not exposed through inappropriate settings mechanisms;\n- disabled-state behavior is coherent;\n- setting changes take effect as documented;\n- required settings are validated before performing irreversible or external work.\n\nA plugin-wide enable setting should prevent the plugin's substantive behavior when disabled unless the exception is deliberate and documented.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "15 — Keep API contracts explicit",
+      "body_markdown": "For plugin HTTP APIs, webhooks, or external adapter APIs, review the contract as a product surface.\n\nVerify:\n\n- versioning strategy where compatibility matters;\n- authentication;\n- request schema;\n- response schema;\n- error format;\n- pagination;\n- idempotency;\n- content type;\n- rate/abuse considerations;\n- backward compatibility;\n- deprecation behavior.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "Examples include:\n\n- an endpoint advertised to external consumers whose response shape changes incidentally with an internal serializer;\n- returning sensitive model attributes because the complete model was serialized by convenience;\n- ambiguous success responses for partially completed operations;\n- undocumented destructive behavior.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "16 — Test the behaviors that can break customer sites",
+      "body_markdown": "Automated tests should correspond to the plugin's actual risk.\n\nCheck for relevant:\n\n- model specs;\n- service specs;\n- request/controller specs;\n- authorization tests;\n- job tests;\n- migration tests;\n- serializer tests;\n- frontend acceptance tests;\n- admin tests;\n- external-service tests using controlled fakes;\n- failure-path tests;\n- upgrade/regression tests.\n\nTests should cover consequential negative paths, not only successful creation.\n\nHigh-risk behavior without meaningful regression tests is a release-readiness concern even when no present bug has been demonstrated.\n\nDistinguish:\n\n- `Defect`: an incorrect behavior demonstrated by evidence.\n- `Test gap`: important behavior lacks reasonable automated coverage.\n\nDo not report a test gap as proof that the implementation is broken.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "17 — Pass the standard Discourse plugin quality checks",
+      "body_markdown": "When the repository is compatible with the current Discourse plugin tooling, run the checks provided by the plugin itself and the standard Discourse plugin workflow where practical.\n\nReview, where present:\n\n- Ruby tests/specs;\n- frontend tests;\n- JavaScript/TypeScript lint;\n- template/Glimmer checks;\n- CSS/SCSS lint;\n- formatting;\n- type checking;\n- plugin CI workflow.\n\nDo not substitute lint for behavioral testing.\n\nIf a standard check cannot run because the repository intentionally supports an older Discourse generation, record the supported version and use the matching toolchain where feasible.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "18 — Ship an installable release",
+      "body_markdown": "Review the actual release artifact or tagged commit whenever possible.\n\nVerify installation according to the documented instructions.\n\nCheck:\n\n- the plugin directory is self-contained;\n- `plugin.rb` metadata is accurate;\n- dependencies are declared;\n- required assets exist;\n- production does not depend on the author's local checkout;\n- development-only symlinks are absent from the shipped artifact;\n- build steps are reproducible;\n- required settings are documented;\n- restart/rebuild requirements are documented;\n- supported Discourse versions are stated honestly.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "- absolute local paths;\n- references to unpublished local packages;\n- missing generated assets required in production;\n- undeclared runtime dependencies;\n- installation instructions that do not install the submitted release;\n- a tagged release whose bytes differ materially from the reviewed source without explanation.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "19 — Make upgrades safe",
+      "body_markdown": "A plugin update must preserve the site's valid existing state unless a breaking change is deliberately documented and supported by an explicit migration path.\n\nTest representative upgrades where the plugin stores meaningful data.\n\nReview:\n\n- database migrations;\n- renamed settings;\n- renamed classes or identifiers;\n- serialized data;\n- plugin-store keys;\n- custom-field names;\n- external API revisions;\n- background work already in flight;\n- removed features;\n- changed permissions.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "- an update silently loses configuration;\n- stored records become unreadable without migration;\n- in-flight jobs become permanently invalid;\n- a renamed setting resets security-sensitive behavior unexpectedly;\n- the plugin requires administrators to delete existing plugin data merely to upgrade normally.\n\nExperimental software may make breaking changes, but those changes still need to be intentional and documented.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "20 — Handle disablement and removal predictably",
+      "body_markdown": "Determine what happens when the plugin is disabled or removed.\n\nDisabling the plugin should not leave unexpected active behavior.\n\nReview:\n\n- scheduled jobs;\n- external callbacks;\n- webhooks;\n- routes;\n- assets;\n- plugin records;\n- user-visible remnants;\n- remote integrations.\n\nDo not require uninstall to delete user data automatically. Preserving data is often safer.\n\nIf permanent cleanup is provided, destructive cleanup must be explicit.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "21 — Maintain compatibility deliberately",
+      "body_markdown": "Discourse changes continuously.\n\nThe plugin must make a support claim that can be understood and tested.\n\nLook for:\n\n- minimum supported Discourse version;\n- tests against an appropriate branch or version;\n- deprecated API usage;\n- compatibility shims;\n- version guards;\n- frontend API compatibility;\n- Ruby/Rails assumptions;\n- database assumptions.\n\nDo not require support for all Discourse versions.\n\nA narrow support window is acceptable when it is clearly stated.\n\nDo not accept a broad compatibility claim solely because installation succeeds.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "22 — Declare and constrain dependencies",
+      "body_markdown": "Review Ruby, JavaScript, system, and service dependencies.\n\nVerify:\n\n- they are actually required;\n- their licenses permit distribution/use;\n- production dependencies are distinguished from development dependencies;\n- versions are constrained appropriately;\n- abandoned or unusually privileged dependencies receive appropriate scrutiny;\n- external SaaS requirements are disclosed.\n\nDo not require exact pinning of every dependency. Evaluate whether the constraint strategy provides reproducible and maintainable behavior.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "23 — Respect Discourse security boundaries",
+      "body_markdown": "A plugin must not deliberately bypass security controls provided by Discourse.\n\nScrutinize behavior involving:\n\n- staff permissions;\n- category security;\n- secure uploads;\n- authentication;\n- API scopes;\n- user impersonation;\n- rate limits;\n- CSRF protection;\n- content visibility;\n- deleted content;\n- trust-level restrictions.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "Examples include:\n\n- making staff-only information public;\n- bypassing category permissions to simplify an integration;\n- disabling CSRF checks without an appropriate alternative authentication boundary;\n- granting admin-equivalent capability to an ordinary authenticated user;\n- exposing protected uploads through a public proxy endpoint.\n\nOverlapping with a built-in Discourse feature is not itself a problem.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "24 — Do not conceal operational behavior",
+      "body_markdown": "Administrators should be able to understand significant behavior caused by the plugin.\n\nDocument, where applicable:\n\n- external destinations;\n- scheduled processing;\n- data retention;\n- destructive actions;\n- API/webhook requirements;\n- expected network access;\n- generated users or groups;\n- database growth;\n- logging;\n- backup considerations;\n- required infrastructure.\n\nHidden telemetry, undocumented outbound publication, or unexpected modification of forum state is a release blocker.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "25 — Provide useful documentation and a support path",
+      "body_markdown": "A production administrator should not have to reverse-engineer the plugin to operate it.\n\nDocumentation should cover what is relevant:\n\n- purpose;\n- supported Discourse versions;\n- installation;\n- upgrade;\n- configuration;\n- required permissions;\n- external service setup;\n- security model;\n- normal operation;\n- troubleshooting;\n- backup/recovery considerations;\n- removal/disablement;\n- known limitations;\n- breaking changes;\n- support channel.\n\nCode comments do not replace operator documentation.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "26 — Represent the plugin honestly",
+      "body_markdown": "Documentation, screenshots, topic listings, demos, and release notes must describe the shipped release.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Required correction",
+          "body_markdown": "- screenshots of features absent from the release;\n- claiming compatibility that was not implemented;\n- calling an experimental integration production-ready without describing known constraints;\n- failing to disclose a required paid third-party service;\n- describing mock UI as completed functionality;\n- claiming that an external system remains synchronized when synchronization is only one-way.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "27 — Have rights to distribute the release",
+      "body_markdown": "Inspect licenses and included third-party assets where material.\n\nThe plugin should have the right to distribute:\n\n- source code;\n- copied libraries;\n- icons;\n- fonts;\n- images;\n- fixtures;\n- demo content;\n- generated bundles that contain third-party work.\n\nRequired notices must remain intact.\n\nDo not treat the presence of third-party code as a problem by itself.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "28 — Keep repository and release hygiene appropriate",
+      "body_markdown": "Check for accidentally shipped development material such as:\n\n- credentials;\n- `.env` files;\n- database dumps;\n- production logs;\n- private certificates;\n- local absolute paths;\n- editor swap files;\n- temporary archives;\n- test secrets that are actually live;\n- customer data;\n- large unrelated binaries.\n\nExample and fixture credentials are acceptable when clearly nonfunctional and scoped for testing.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "29 — Treat experimental and pre-release plugins honestly",
+      "body_markdown": "Alpha, beta, preview, and experimental plugins are reviewable.\n\nPre-release status is not itself a defect.\n\nVerify that:\n\n- the release is clearly labeled;\n- known limitations are disclosed;\n- installation is reproducible;\n- migration and data-safety behavior is still responsible;\n- breaking-change expectations are stated;\n- production suitability is not overstated.\n\nExperimental status never excuses credential exposure, authorization failures, destructive updates, or inability to recover from foreseeable partial failures.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "30 — Review removal of obsolete compatibility code",
+      "body_markdown": "Compatibility code can become a source of hidden defects.\n\nWhen a plugin supports multiple generations of Discourse, determine whether version branches and fallback paths are still reachable and tested.\n\nDo not require immediate removal solely because code is old.\n\nFlag compatibility code when it:\n\n- invokes APIs absent from every claimed supported version;\n- changes security behavior inconsistently;\n- masks failures;\n- prevents current behavior from being tested;\n- preserves an obsolete data representation with no migration strategy.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "Discourse-specific high-risk review",
+      "body_markdown": "Apply a deeper pass when the plugin contains any of the following:\n\n- authentication or SSO;\n- admin impersonation;\n- publishing/syndication;\n- inbound webhooks;\n- outbound webhooks;\n- private-message processing;\n- secure-category access;\n- background synchronization;\n- remote command execution;\n- shell execution;\n- arbitrary URL fetching;\n- upload processing;\n- payment functionality;\n- user provisioning;\n- automated moderation;\n- deletion or archival;\n- large data migrations;\n- direct database SQL;\n- encryption or secret management.\n\nFor these areas, trace the complete flow rather than reviewing isolated functions.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "External publication checklist",
+      "body_markdown": "For a plugin that publishes Discourse content to another platform, explicitly answer:\n\n1. Which Discourse content is eligible?\n2. Who enables publication?\n3. Which permissions are checked before content becomes eligible?\n4. Can private or staff content ever enter the publication queue?\n5. What immutable or revisioned identity identifies the source content?\n6. What identifies the destination resource?\n7. Is publication idempotent?\n8. What happens after a timeout with an unknown remote result?\n9. What happens after remote success and local failure?\n10. What happens after local success and remote failure?\n11. How are stale claims or leases recovered?\n12. How is deletion represented?\n13. How is a previously published item disabled?\n14. Can credentials be rotated without losing work?\n15. Can a destination be disabled without affecting other destinations?\n16. How is an incompatible adapter version handled?\n17. How is a partially completed deployment reconciled?\n18. Are publication revisions observable to an operator?\n19. Can an administrator retry or recover without editing the database?\n20. Does an external build/deploy step preserve the same transaction boundary?\n\nIf any answer depends on undocumented assumptions, record that explicitly.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "Suggested mechanical review",
+      "body_markdown": "Use the repository's own commands first.\n\nWhere applicable, run:\n\n```text\ngit status --short\ngit diff --check\n```\n\nThen use the plugin's documented test and lint commands.\n\nIf the plugin follows the current Discourse plugin skeleton, inspect its package scripts and CI workflow rather than inventing substitute commands.\n\nAlso search deliberately for high-risk constructs. Example categories:\n\n```text\ncredentials and secrets\nshell/process execution\nraw SQL\nHTML-safe rendering\nskip_before_action / disabled CSRF\nexternal HTTP\nFile / IO / Pathname\neval / instance_eval / class_eval\ndeserialize / YAML load\nadmin-only routes\nguardian checks\nscheduled jobs\nmigrations\nplugin store\ncustom fields\nsecure uploads\nuser and category serializers\n```\n\nA grep match is an investigation lead, not a finding.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "Release verification",
+      "body_markdown": "When release readiness is part of the request, verify the exact release candidate.\n\nRecord:\n\n- commit;\n- tag;\n- plugin version;\n- archive hash when available;\n- declared Discourse compatibility;\n- test commands executed;\n- test results;\n- checks not executed;\n- environment limitations;\n- outstanding required findings.\n\nPrefer testing installation from the same tagged/archive artifact that users receive.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "Finding severity",
+      "body_markdown": "Use severity to communicate operational impact, not drama.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "Critical",
+          "body_markdown": "Use for demonstrated behavior likely to allow severe site compromise, secret compromise, broad unauthorized access, or destructive loss affecting production data.",
+          "children": []
+        },
+        {
+          "level": 2,
+          "heading": "High",
+          "body_markdown": "Use for significant authorization failures, exposure of private content, dangerous migration behavior, serious secret handling defects, or synchronization defects capable of substantial persistent corruption.",
+          "children": []
+        },
+        {
+          "level": 2,
+          "heading": "Medium",
+          "body_markdown": "Use for concrete correctness, compatibility, recoverability, privacy, accessibility, or operational problems that materially affect normal installations but do not meet High severity.",
+          "children": []
+        },
+        {
+          "level": 2,
+          "heading": "Low",
+          "body_markdown": "Use for limited-scope defects with a real but modest operational effect.",
+          "children": []
+        },
+        {
+          "level": 2,
+          "heading": "Info",
+          "body_markdown": "Use for non-blocking observations, documentation gaps of minor consequence, maintainability notes, or optional hardening.\n\nDo not inflate severity because a finding appears security-related.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "Confidence",
+      "body_markdown": "For each finding, use:\n\n- `High`: directly demonstrated in code, tests, or runtime behavior.\n- `Medium`: strongly supported but an important runtime condition has not been verified.\n- `Low`: plausible concern requiring verification.\n\nDo not present Low-confidence speculation as a required correction unless the uncertainty itself is the defect.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "Required review output",
+      "body_markdown": "Produce the report in this order.",
+      "children": [
+        {
+          "level": 2,
+          "heading": "1. Review scope",
+          "body_markdown": "Include:\n\n- plugin name;\n- plugin version;\n- commit/tag if known;\n- Discourse versions claimed;\n- files or artifact reviewed;\n- commands actually executed;\n- important areas not tested.",
+          "children": []
+        },
+        {
+          "level": 2,
+          "heading": "2. Summary",
+          "body_markdown": "State:\n\n- number of Critical findings;\n- number of High findings;\n- number of Medium findings;\n- number of Low findings;\n- number of Info findings;\n- number of unverified material concerns.\n\nDo not issue marketplace approval.",
+          "children": []
+        },
+        {
+          "level": 2,
+          "heading": "3. Required findings",
+          "body_markdown": "For each:\n\n```text",
+          "children": [
+            {
+              "level": 3,
+              "heading": "[Severity] Rule NN — Short finding title",
+              "body_markdown": "Evidence:\n- path/to/file.rb:123\n- path/to/spec.rb:45\n\nObserved:\nDescribe exactly what the implementation does.\n\nImpact:\nDescribe the concrete consequence to a Discourse installation.\n\nRequired change:\nState what property must be corrected. When useful, suggest a compatible implementation direction without unnecessarily prescribing one exact design.\n\nVerification:\nState how the correction should be tested.\n\nConfidence:\nHigh | Medium | Low\n```\n\nOrder findings by severity, then by rule number.",
+              "children": []
+            }
+          ]
+        },
+        {
+          "level": 2,
+          "heading": "4. Test and verification gaps",
+          "body_markdown": "List material behaviors you could not establish.\n\nDo not turn absence of evidence into a defect automatically.",
+          "children": []
+        },
+        {
+          "level": 2,
+          "heading": "5. Optional improvements",
+          "body_markdown": "Keep non-blocking recommendations separate from required findings.",
+          "children": []
+        },
+        {
+          "level": 2,
+          "heading": "6. Rule matrix",
+          "body_markdown": "Report each applicable rule as:\n\n- `Pass`\n- `Finding`\n- `Not verified`\n- `Not applicable`\n\nExample:\n\n```text\n01 Clear capability — Pass\n02 Native integration — Pass\n03 Data lifecycle — Pass\n04 Migration safety — Not applicable\n05 Server authorization — Finding\n...\n```\n\nA `Pass` means the reviewed evidence did not reveal a violation within the inspected scope. It does not guarantee absence of defects.",
+          "children": []
+        }
+      ]
+    },
+    {
+      "level": 1,
+      "heading": "Review outcome language",
+      "body_markdown": "Use factual outcome language only.\n\nGood:\n\n- `No required findings were identified in the reviewed scope.`\n- `Three required corrections were identified.`\n- `Release readiness remains unverified because upgrade testing was not performed.`\n- `The plugin passed the repository's automated test suite in the tested environment.`\n\nDo not say:\n\n- `Discourse approved`\n- `Marketplace approved`\n- `Officially safe`\n- `Secure`\n- `Production certified`\n- `Guaranteed compatible`",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "After fixes",
+      "body_markdown": "When asked to review a corrected version:\n\n1. Recheck every previous finding against the new code.\n2. Verify the regression test where appropriate.\n3. Check whether the correction introduced adjacent defects.\n4. Rerun affected test/lint suites.\n5. Do not mark a finding resolved solely because its original lines changed.\n6. Preserve a short resolution note mapping the old finding to the evidence that now resolves it.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "Authoritative references",
+      "body_markdown": "When current Discourse behavior is material to a finding, consult current official Discourse documentation and source rather than relying only on remembered framework conventions.\n\nUseful authoritative sources include:\n\n- Discourse core documentation.\n- The Discourse core repository.\n- The official Discourse plugin skeleton.\n- Current Plugin API documentation/source.\n- Official Meta Discourse developer documentation.\n- Official examples maintained by Discourse.\n\nPrefer the behavior of the Discourse version actually claimed by the plugin when that differs from current `main`.",
+      "children": []
+    },
+    {
+      "level": 1,
+      "heading": "Final constraint",
+      "body_markdown": "This skill assists with technical review.\n\nIt does not:\n\n- submit a plugin;\n- grant marketplace or community approval;\n- certify security;\n- establish legal compliance;\n- establish license ownership;\n- replace human review;\n- prove compatibility with versions that were not tested.\n\nAnything important that was not tested must remain clearly marked as unverified.",
+      "children": []
+    }
+  ]
+}
