@@ -4,6 +4,8 @@ Updated: 2026-09-21
 
 ## Current state
 
+- Public repository: `https://github.com/CodeWorksLabs/review-skills`.
+- Initial published content commit: `23f80fc0e1ae85bfdafd6dd92f9c3e1dc8258cc9`.
 - Repository purpose: public CodeWorksLabs wrapper for evidence-based platform review guidance.
 - Active skill: `.agents/skills/codeworkslabs-platform-review/SKILL.md`.
 - Maintained platform guidance: Discourse and Statamic.
