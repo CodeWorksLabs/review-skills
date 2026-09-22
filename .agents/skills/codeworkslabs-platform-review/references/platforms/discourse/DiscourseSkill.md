@@ -2,7 +2,7 @@
 name: discourse-extension-review
 description: Review Discourse plugins, themes, and theme components for supported integration, correctness, security, compatibility, lifecycle safety, accessibility, documentation, and release readiness. Use for static audits, integrated verification, or release review of a Discourse extension.
 metadata:
-  ruleset-version: 0.1.1
+  ruleset-version: 0.1.2
   structured-core: DiscourseSkill.json
 ---
 
@@ -10,7 +10,7 @@ metadata:
 
 Review the Discourse extension against the rules in this skill and the complete structured core in `DiscourseSkill.json`. The Markdown and JSON are one active platform package; neither may be replaced by a summary.
 
-The goal is to determine whether the plugin is a well-behaved Discourse extension that an administrator can install, configure, update, operate, and remove without unreasonable risk to the forum or its data.
+The goal is to determine whether the candidate is a well-behaved Discourse extension that an administrator can install, configure, update, operate, and remove without unreasonable risk to the forum or its data.
 
 This is an evidence-based engineering review.
 
@@ -40,27 +40,13 @@ Do not describe this review as a comprehensive security audit.
 
 # Review scope
 
-Inspect, when present:
+Classify the candidate as a plugin, theme, theme component, hybrid extension, integration repository, or release artifact before building the file census. Do not apply a plugin-shaped directory list to a theme or theme component.
 
-- `plugin.rb`
+Inspect these shared repository and release surfaces when present:
+
 - `README.md`
 - `LICENSE`
 - `CHANGELOG.md` or equivalent release history
-- `config/settings.yml`
-- `config/locales/`
-- `app/`
-- `lib/`
-- `db/migrate/`
-- `jobs/`
-- `services/`
-- `serializers/`
-- `controllers/`
-- `models/`
-- `assets/javascripts/`
-- `assets/stylesheets/`
-- `admin/`
-- `test/`
-- `spec/`
 - `package.json`
 - lockfiles
 - CI workflows
@@ -69,9 +55,34 @@ Inspect, when present:
 - generated assets included in the release
 - the exact tagged/archive release when available
 
-Also inspect plugin dependencies and any documented minimum or maximum Discourse version.
+For a plugin, inspect the actual reachable tree, including when present:
 
-If reviewing a working tree, identify untracked files relevant to the plugin before declaring the review complete.
+- `plugin.rb` and every file it loads, registers, or exposes;
+- `config/settings.yml`, `config/locales/`, and `config/routes.rb`;
+- `app/`, including controllers, jobs, models, serializers, services, and views;
+- `lib/`, including any engine, validators, middleware, jobs, and service objects;
+- `db/migrate/` and `db/post_migrate/`;
+- `assets/javascripts/`, including Discourse and admin initializers, routes, controllers, services, components, connectors, templates, and tests;
+- `assets/stylesheets/`, including common, desktop, mobile, admin, and embedded styles;
+- `spec/`, `test/`, fixtures, support files, and system or browser coverage;
+- Ruby, JavaScript, system, and external-service dependencies;
+- `.discourse-compatibility`, `d-compat/*` policy or workflows, and every documented minimum or maximum Discourse version.
+
+For a theme or theme component, inspect the actual reachable tree, including when present:
+
+- root `about.json`, including `component`, license/about/authors, version, minimum/maximum Discourse version, assets, color schemes, screenshots, and themeable site settings;
+- root `settings.yml` and `locales/`;
+- `common/`, `desktop/`, and `mobile/`, including their SCSS and supported HTML injection files;
+- root `javascripts/`, including `api-initializers/` and all `.js`, `.gjs`, and `.hbs` files;
+- root `stylesheets/` and every imported stylesheet;
+- root `assets/` and every asset referenced by `about.json`, CSS, JavaScript, or templates;
+- preview/screenshots, tests, lint/build configuration, compatibility branches or metadata, and packaged/exported theme bytes.
+
+Confirm that the candidate's declared type matches `about.json` and its installation behavior. A theme component (`component: true`) and a full theme (`component: false` or absent) share the documented filesystem model but require different behavioral coverage. For hybrid repositories, apply every applicable inventory; do not let one entrypoint hide another.
+
+These are discovery prompts, not mandatory boilerplate. The absence of an optional directory is not a finding. Inventory the files that actually ship, then trace whether Discourse loads them through a supported path. Treat an unexpected or misplaced file as an investigation lead rather than silently excluding it.
+
+If reviewing a working tree, identify relevant untracked and ignored files before declaring the review complete. Reconcile the working tree, tagged/archive release, installed extension, and generated assets as separate evidence surfaces.
 
 # Version coverage and isolated installations
 
@@ -1013,8 +1024,8 @@ Produce the report in this order.
 
 Include:
 
-- plugin name;
-- plugin version;
+- extension name and type;
+- extension version;
 - commit/tag if known;
 - Discourse versions claimed;
 - files or artifact reviewed;

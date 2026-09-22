@@ -1,5 +1,13 @@
 # Changelog
 
+## discourse-skill-v0.1.2 — 2026-09-22
+
+- Split the candidate file census into shared, plugin, theme, and theme-component inventories.
+- Corrected theme JavaScript discovery to the documented root `javascripts/` tree rather than plugin-style `assets/javascripts/` or `javascripts/discourse/` assumptions.
+- Added the documented theme/component roots: `about.json`, root `settings.yml`, `locales/`, `common/`, `desktop/`, `mobile/`, `stylesheets/`, and `assets/`.
+- Added full-theme checklist routing and required hybrid candidates to receive every applicable inventory.
+- Clarified that optional directories are discovery prompts, while misplaced, unreachable, untracked, ignored, packaged, installed, and generated files require explicit reconciliation.
+
 ## discourse-skill-v0.1.1 — 2026-09-21
 
 - Added a five-slot local Discourse matrix plan for `main`, current monthly, previous supported monthly, maintained ESR, and lifecycle verification.

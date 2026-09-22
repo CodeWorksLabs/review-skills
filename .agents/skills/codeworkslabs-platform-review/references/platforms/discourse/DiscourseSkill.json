@@ -1,7 +1,7 @@
 {
   "format": "codex.discourse-extension-review.skill",
   "format_version": "2.0.1",
-  "ruleset_version": "0.1.1",
+  "ruleset_version": "0.1.2",
   "ruleset_status": "community-draft",
   "metadata": {
     "name": "discourse-extension-review",
@@ -66,7 +66,8 @@
         "plugin.rb",
         "app/",
         "lib/",
-        "db/migrate/"
+        "db/migrate/ or db/post_migrate/",
+        "assets/javascripts/ or assets/stylesheets/"
       ],
       "emphasis": [
         "server_authorization",
@@ -82,9 +83,9 @@
     "theme_component": {
       "indicators": [
         "about.json with component=true",
-        "settings.yml",
-        "javascripts/discourse/",
-        "common/ or desktop/ or mobile/ styles"
+        "root settings.yml when settings exist",
+        "root javascripts/ for .js, .gjs, or .hbs files",
+        "common/, desktop/, mobile/, stylesheets/, or assets/ when present"
       ],
       "emphasis": [
         "plugin_api_outlets_connectors_modifiers",
@@ -104,7 +105,9 @@
     "theme": {
       "indicators": [
         "about.json with component=false or absent",
-        "theme assets"
+        "root settings.yml when settings exist",
+        "root javascripts/ for .js, .gjs, or .hbs files",
+        "common/, desktop/, mobile/, stylesheets/, or assets/ when present"
       ],
       "emphasis": [
         "complete_theme_rendering",
@@ -116,6 +119,48 @@
     "hybrid": {
       "instruction": "Apply all relevant plugin, theme, and theme-component checks. Do not discard a profile merely because another profile contains the primary entrypoint."
     }
+  },
+  "candidate_inventory": {
+    "instruction": "Classify the candidate before building the file census. Inventory files that actually ship and trace whether Discourse loads them through supported paths. Optional paths are not mandatory boilerplate; unexpected or misplaced files are investigation leads, not automatic exclusions.",
+    "shared": [
+      "README.md",
+      "LICENSE",
+      "CHANGELOG.md or equivalent release history",
+      "package.json and lockfiles when present",
+      "CI workflows",
+      "Docker or installation scripts",
+      "external-service integrations",
+      "generated assets included in the release",
+      "exact tagged or archived release when available",
+      "relevant untracked and ignored working-tree files"
+    ],
+    "plugin": [
+      "plugin.rb and every file it loads, registers, or exposes",
+      "config/settings.yml, config/locales/, and config/routes.rb",
+      "app/ including controllers, jobs, models, serializers, services, and views",
+      "lib/ including engines, validators, middleware, jobs, and service objects",
+      "db/migrate/ and db/post_migrate/",
+      "assets/javascripts/ including Discourse and admin initializers, routes, controllers, services, components, connectors, templates, and tests",
+      "assets/stylesheets/ including common, desktop, mobile, admin, and embedded styles",
+      "spec/, test/, fixtures, support files, and system or browser coverage",
+      "Ruby, JavaScript, system, and external-service dependencies",
+      ".discourse-compatibility, d-compat branches or workflows, and declared Discourse version bounds"
+    ],
+    "theme_or_component": [
+      "root about.json including component, license/about/authors, version, Discourse version bounds, assets, color schemes, screenshots, and themeable site settings",
+      "root settings.yml and locales/",
+      "common/, desktop/, and mobile/ including SCSS and supported HTML injection files",
+      "root javascripts/ including api-initializers/ and all .js, .gjs, and .hbs files",
+      "root stylesheets/ and every imported stylesheet",
+      "root assets/ and every asset referenced by about.json, CSS, JavaScript, or templates",
+      "preview or screenshots, tests, lint/build configuration, compatibility branches or metadata, and packaged or exported theme bytes"
+    ],
+    "classification_checks": [
+      "The declared extension type matches about.json and installation behavior.",
+      "A theme component has component=true; a full theme has component=false or omits component.",
+      "A hybrid repository receives every applicable inventory.",
+      "Working tree, tagged or archived release, installed extension, and generated assets are reconciled as separate evidence surfaces."
+    ]
   },
   "review_modes": {
     "static_review": {
@@ -300,6 +345,17 @@
       "attach_detach_native_update",
       "css_scope",
       "uploads_assets_icons_sprites"
+    ],
+    "theme": [
+      "about_json_identity_and_metadata",
+      "complete_theme_rendering",
+      "core_page_coverage",
+      "settings_locales_and_assets",
+      "api_initializers_and_supported_javascript",
+      "responsive_accessibility_and_rtl",
+      "foundation_horizon_and_embeds",
+      "theme_component_interactions",
+      "install_update_rollback_and_compatibility"
     ]
   },
   "verification_matrix": [

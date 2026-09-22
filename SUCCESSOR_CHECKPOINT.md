@@ -1,6 +1,6 @@
 # Successor checkpoint
 
-Updated: 2026-09-21
+Updated: 2026-09-22
 
 ## Current state
 
@@ -9,7 +9,8 @@ Updated: 2026-09-21
 - Repository purpose: public CodeWorksLabs wrapper for evidence-based platform review guidance.
 - Active skill: `.agents/skills/codeworkslabs-platform-review/SKILL.md`.
 - Maintained platform guidance: Discourse and Statamic.
-- The active Discourse package contains the complete working Markdown skill and canonical `DiscourseSkill.json` structured core at ruleset `0.1.1`. The wrapper requires both; the former 107-line summary was removed. The originating exact copies remain under `sources/discourse/`.
+- The active Discourse package contains the complete working Markdown skill and canonical `DiscourseSkill.json` structured core at ruleset `0.1.2`. The wrapper requires both; the former 107-line summary was removed. The originating exact copies remain under `sources/discourse/`.
+- Ruleset `0.1.2` corrects a community-reported plugin-shaped scope defect: theme and theme-component candidates now use the official root `about.json`, `settings.yml`, `locales/`, `common/`, `desktop/`, `mobile/`, `javascripts/`, `stylesheets/`, and `assets/` model, while plugin and shared release inventories remain distinct.
 - `LOCAL_TEST_MATRIX.md` records the five-slot WSL/container plan for isolated compatibility and lifecycle verification without requiring five concurrent stacks.
 - Statamic's official Marketplace review skill is vendored unchanged and has recorded upstream identity.
 - The complete supplied Discourse design package is preserved under `sources/discourse/` as non-controlling provenance.
