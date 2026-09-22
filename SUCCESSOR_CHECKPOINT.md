@@ -9,6 +9,7 @@ Updated: 2026-09-21
 - Repository purpose: public CodeWorksLabs wrapper for evidence-based platform review guidance.
 - Active skill: `.agents/skills/codeworkslabs-platform-review/SKILL.md`.
 - Maintained platform guidance: Discourse and Statamic.
+- The active Discourse package contains the exact complete 1,131-line Markdown skill and exact complete 1,328-line structured JSON improvement core. The wrapper requires both; the former 107-line summary was removed.
 - Statamic's official Marketplace review skill is vendored unchanged and has recorded upstream identity.
 - The complete supplied Discourse design package is preserved under `sources/discourse/` as non-controlling provenance.
 - The earlier CodeWorksLabs Statamic wrapper is preserved under `sources/statamic/` as non-controlling provenance.

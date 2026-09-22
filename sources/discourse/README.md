@@ -6,6 +6,6 @@ These files preserve the complete output package supplied by the separate Discou
 - `DiscourseSkill.improved.json` — its structured improvement intermediate;
 - `discourse-skill-improvements-report.md` — its analysis and recommended architecture.
 
-They are design provenance, not active review instructions. The maintained Discourse guidance distilled from that work lives at `.agents/skills/codeworkslabs-platform-review/references/platforms/discourse/DiscourseSkill.md`.
+They are immutable design provenance, not a second active instruction set. Exact working copies of the complete Markdown skill and structured JSON core live under `.agents/skills/codeworkslabs-platform-review/references/platforms/discourse/` and are loaded together by the wrapper.
 
-The structured JSON is retained because it contains useful requirement mappings and routing metadata, but agents must not treat it as a second controlling skill.
+The structured JSON is an active core in the platform package. This source copy exists only to preserve the originating identity for comparison as the active core evolves.

@@ -16,11 +16,12 @@ Authorship method is not a proxy for software quality. Reviews evaluate the exac
 ## Repository layout
 
 - `.agents/skills/codeworkslabs-platform-review/SKILL.md` — the single reusable wrapper.
-- `.agents/skills/codeworkslabs-platform-review/references/platforms/` — platform-specific guidance selected by the wrapper.
+- `.agents/skills/codeworkslabs-platform-review/references/platforms/` — complete platform-specific working skills and structured review cores selected by the wrapper.
 - `sources/` — preserved non-controlling source and design material used to develop the maintained guidance.
 - `published-reviews/` — public review examples or reports, each with an explicit status and candidate identity.
+- `CONTRIBUTING.md` — the public contribution and platform-authority boundary.
 
-The vendored Statamic skill remains unchanged from its official source. CodeWorksLabs additions live outside that file.
+The Discourse package contains the complete working Markdown skill and its complete structured improvement core. The vendored Statamic skill remains unchanged from its official source. CodeWorksLabs additions live outside that file.
 
 ## Public-by-default boundary
 
@@ -28,4 +29,4 @@ Review methods and ordinary product reports should be public. Do not publish cre
 
 ## Status
 
-The initial Discourse material is under active development. Historical source artifacts are preserved for traceability but are not controlling instructions. A product review is valid only under the exact authority, candidate identity, scope, evidence, and disposition requirements applicable to that review.
+The Discourse core is active CodeWorksLabs-maintained public guidance and is intended to improve through internal use and open community scrutiny. Historical source artifacts remain preserved for traceability but are not separate controlling instructions. A product review is valid only under the exact authority, candidate identity, scope, evidence, and disposition requirements applicable to that review.
