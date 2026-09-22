@@ -1,5 +1,11 @@
 # Changelog
 
+## discourse-skill-v0.1.1 — 2026-09-21
+
+- Added a five-slot local Discourse matrix plan for `main`, current monthly, previous supported monthly, maintained ESR, and lifecycle verification.
+- Required independent mutable state per slot while permitting shared immutable images, dependency caches, and Git objects.
+- Defined serialized operation, immutable candidate handling, a matrix manifest, deterministic controls, and a separate lifecycle sequence.
+
 ## discourse-skill-v0.1.0 — 2026-09-21
 
 - Established `DiscourseSkill.json` as the canonical structured Discourse review core.

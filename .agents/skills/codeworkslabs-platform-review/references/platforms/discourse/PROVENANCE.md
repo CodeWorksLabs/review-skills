@@ -7,12 +7,13 @@ Status: CodeWorksLabs-maintained public review core. It is not official Discours
 - `DiscourseSkill.md` is the complete working human-readable skill, evolved from the originating Discourse review-design task.
 - `DiscourseSkill.json` is the canonical machine-readable core, evolved from that task's structured improvement artifact.
 
-Current ruleset: `0.1.0` (`community-draft`).
+Current ruleset: `0.1.1` (`community-draft`).
 
 Current active identities:
 
-- `DiscourseSkill.md`: 38,205 bytes; 1,159 lines; SHA-256 `e80e8de9c18eff28ba4992c3fdfcaf91a58be649ba12be52ad2880c731d5c127`.
-- `DiscourseSkill.json`: 110,249 bytes; 1,370 lines; SHA-256 `8048da5e9df1bfaf161f7e6b6df56af93029e88704d1033f9a095adb4745c2da`.
+- `DiscourseSkill.md`: 38,463 bytes; 1,161 lines; SHA-256 `08c0b5450f68d01d28c5e9c43ee24ff5fb8c2fd2b0e1726e9f96d78a0f5c4ef3`.
+- `DiscourseSkill.json`: 110,305 bytes; 1,371 lines; SHA-256 `58834cae79b87fbb626969c116eb4fef6a5e2863449d1b67e8a58ad07b6e8129`.
+- `LOCAL_TEST_MATRIX.md`: 5,517 bytes; 88 lines; SHA-256 `5f39f9a366520c6566e0a8ac9c05c209763bbf1abb72b3a140667e373089ba05`.
 
 ## Originating identities
 

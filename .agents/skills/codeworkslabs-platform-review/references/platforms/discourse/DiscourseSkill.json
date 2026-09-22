@@ -1,7 +1,7 @@
 {
   "format": "codex.discourse-extension-review.skill",
   "format_version": "2.0.1",
-  "ruleset_version": "0.1.0",
+  "ruleset_version": "0.1.1",
   "ruleset_status": "community-draft",
   "metadata": {
     "name": "discourse-extension-review",
@@ -215,6 +215,7 @@
   },
   "version_coverage": {
     "selection_rule": "For release readiness, test the exact candidate in an independently identified installation or isolated container for every materially distinct Discourse release line the extension claims to support. Refresh the selected targets from Discourse's current official support data before each review.",
+    "implementation_reference": "LOCAL_TEST_MATRIX.md",
     "target_roles": [
       {
         "id": "development_head",

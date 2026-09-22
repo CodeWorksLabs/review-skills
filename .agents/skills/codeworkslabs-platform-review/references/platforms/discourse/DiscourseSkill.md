@@ -2,7 +2,7 @@
 name: discourse-extension-review
 description: Review Discourse plugins, themes, and theme components for supported integration, correctness, security, compatibility, lifecycle safety, accessibility, documentation, and release readiness. Use for static audits, integrated verification, or release review of a Discourse extension.
 metadata:
-  ruleset-version: 0.1.0
+  ruleset-version: 0.1.1
   structured-core: DiscourseSkill.json
 ---
 
@@ -94,6 +94,8 @@ For every target:
 - do not infer compatibility for one release line from another.
 
 Use a separate clean-install and lifecycle environment when those claims are in scope. Use a staging-like environment for native update, tag pinning, rollback or recovery, and return-to-current verification. If a claimed release line is not exercised, narrow the compatibility claim or mark it `Not verified`.
+
+For the recommended five-slot local topology, isolation rules, candidate handling, evidence manifest, resource model, and lifecycle sequence, read [LOCAL_TEST_MATRIX.md](LOCAL_TEST_MATRIX.md) when integrated or release-readiness verification is authorized.
 
 # 01 — Provide a clear and legitimate Discourse capability
 
