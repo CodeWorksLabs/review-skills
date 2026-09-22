@@ -1,11 +1,14 @@
 ---
-name: discourse-plugin-review
-description: Review a Discourse plugin for native integration, correctness, security, upgrade safety, compatibility, usability, documentation, and release readiness. Use when auditing a Discourse plugin before release, marketplace/community publication, installation on a production forum, or after a significant plugin change.
+name: discourse-extension-review
+description: Review Discourse plugins, themes, and theme components for supported integration, correctness, security, compatibility, lifecycle safety, accessibility, documentation, and release readiness. Use for static audits, integrated verification, or release review of a Discourse extension.
+metadata:
+  ruleset-version: 0.1.0
+  structured-core: DiscourseSkill.json
 ---
 
-# Discourse Plugin Review
+# Discourse Extension Review
 
-Review the Discourse plugin against the rules in this skill.
+Review the Discourse extension against the rules in this skill and the complete structured core in `DiscourseSkill.json`. The Markdown and JSON are one active platform package; neither may be replaced by a summary.
 
 The goal is to determine whether the plugin is a well-behaved Discourse extension that an administrator can install, configure, update, operate, and remove without unreasonable risk to the forum or its data.
 
@@ -69,6 +72,28 @@ Inspect, when present:
 Also inspect plugin dependencies and any documented minimum or maximum Discourse version.
 
 If reviewing a working tree, identify untracked files relevant to the plugin before declaring the review complete.
+
+# Version coverage and isolated installations
+
+For release readiness, select targets from Discourse's current official support data and test the exact candidate in an independently identified installation or isolated container for every materially distinct release line the extension claims to support.
+
+The September 2026 matrix that established this method was:
+
+1. **Current development head — Discourse `main`.** Tests forward compatibility against an exact commit from Discourse's active development branch. This can reveal upcoming breakage but does not represent a released production version.
+2. **Current monthly release — Discourse 2026.9.** Tests the newest supported production release line against an exact `release/2026.9` commit or release tag.
+3. **Previous supported monthly release — Discourse 2026.8.** Tests compatibility with the immediately preceding monthly release while it remains within Discourse's published support window.
+4. **Maintained ESR coverage — Discourse 2026.7.** Tests every materially distinct 2026.7 ESR target the extension claims to support, using exact maintained branch, tag, patch, or compatibility-target identities. ESR coverage must not be inferred from success on `main` or a newer monthly release.
+
+Treat those numbers as the dated example, not a permanent list. Before each review, refresh the actual target versions and support status from Discourse's authoritative release data.
+
+For every target:
+
+- use an independently identified installation or isolated container;
+- install or mount the same exact candidate artifact;
+- record the Discourse branch, commit, release identity, extension identity, toolchain, commands, environment, and complete results;
+- do not infer compatibility for one release line from another.
+
+Use a separate clean-install and lifecycle environment when those claims are in scope. Use a staging-like environment for native update, tag pinning, rollback or recovery, and return-to-current verification. If a claimed release line is not exercised, narrow the compatibility claim or mark it `Not verified`.
 
 # 01 — Provide a clear and legitimate Discourse capability
 
@@ -1111,6 +1136,9 @@ Useful authoritative sources include:
 - Current Plugin API documentation/source.
 - Official Meta Discourse developer documentation.
 - Official examples maintained by Discourse.
+- Discourse's current `versions.json` support data.
+- Official release-channel documentation and `release/YYYY.M` branches.
+- Official `d-compat/YYYY.M` plugin and theme compatibility guidance.
 
 Prefer the behavior of the Discourse version actually claimed by the plugin when that differs from current `main`.
 

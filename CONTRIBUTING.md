@@ -22,7 +22,7 @@ Avoid turning one product's architecture, one historical failure, stylistic pref
 
 ## Discourse core synchronization
 
-The active Discourse package contains a human-readable Markdown skill and a structured JSON core. Treat them as one maintained contract.
+The active Discourse package contains a human-readable Markdown skill and the canonical `DiscourseSkill.json` structured core. Treat them as one maintained contract.
 
 A pull request changing either must:
 

@@ -1,6 +1,8 @@
 {
   "format": "codex.discourse-extension-review.skill",
   "format_version": "2.0.1",
+  "ruleset_version": "0.1.0",
+  "ruleset_status": "community-draft",
   "metadata": {
     "name": "discourse-extension-review",
     "description": "Review Discourse plugins, themes, and theme components for supported integration, correctness, security, compatibility, lifecycle safety, accessibility, documentation, and release readiness. Use for static audits, integrated verification, or release review of a Discourse extension.",
@@ -140,6 +142,7 @@
         "archive_hash_when_available",
         "clean_installation",
         "supported_version_matrix",
+        "isolated_environment_per_claimed_release_line",
         "upgrade_from_supported_prior_state",
         "rollback_or_explicitly_unverified_recovery",
         "release_blocker_evaluation"
@@ -208,6 +211,45 @@
       "latest_published_release",
       "differences_from_release",
       "difference_classification_runtime_tests_packaging_docs"
+    ]
+  },
+  "version_coverage": {
+    "selection_rule": "For release readiness, test the exact candidate in an independently identified installation or isolated container for every materially distinct Discourse release line the extension claims to support. Refresh the selected targets from Discourse's current official support data before each review.",
+    "target_roles": [
+      {
+        "id": "development_head",
+        "label": "Current development head — Discourse main",
+        "description": "Tests forward compatibility against an exact commit from Discourse's active development branch. It can reveal upcoming breakage but does not represent a released production version."
+      },
+      {
+        "id": "current_monthly_release",
+        "label": "Current monthly release",
+        "description": "Tests the newest supported production release line against an exact release/YYYY.M commit or release tag."
+      },
+      {
+        "id": "previous_supported_monthly_release",
+        "label": "Previous supported monthly release",
+        "description": "Tests compatibility with the immediately preceding monthly release while it remains within Discourse's published support window."
+      },
+      {
+        "id": "maintained_esr_targets",
+        "label": "Maintained ESR coverage",
+        "description": "Tests every materially distinct ESR target the extension claims to support, using exact maintained branch, tag, patch, or compatibility-target identities. ESR coverage must not be inferred from success on main or a newer monthly release."
+      }
+    ],
+    "example_matrix_as_of_2026_09_21": [
+      "Current development head — Discourse main",
+      "Current monthly release — Discourse 2026.9",
+      "Previous supported monthly release — Discourse 2026.8",
+      "Each maintained Discourse 2026.7 ESR target claimed by the extension"
+    ],
+    "execution_requirements": [
+      "Use an independently identified installation or isolated container for each release target.",
+      "Install or mount the same exact candidate artifact in every target.",
+      "Record the Discourse branch, commit, release identity, extension identity, toolchain, commands, environment, and complete results for every target.",
+      "Use a separate clean-install and lifecycle environment when those claims are in scope.",
+      "Use a staging-like environment for native update, tag pinning, rollback or recovery, and return-to-current verification.",
+      "Do not infer one release line from another. Narrow the compatibility claim when a claimed release line is not exercised."
     ]
   },
   "evidence_reconciliation": {
@@ -288,7 +330,7 @@
       "claim": "version_compatible",
       "static": "APIs, dependencies, and compatibility branches are inspected.",
       "automated": "The declared supported-version matrix passes.",
-      "runtime": "Representative browser smoke testing passes on claimed compatibility lines."
+      "runtime": "The exact candidate passes in an independently identified installation or isolated container for every claimed materially distinct supported release line, with representative browser smoke testing."
     },
     {
       "claim": "embed_safe",
@@ -618,7 +660,7 @@
       },
       "evidence_thresholds": {
         "static_review": "Separate minimum supported, supported, tested, and merely known-working versions.",
-        "release_readiness": "Execute the declared supported-version matrix or narrow the compatibility claim to the versions actually tested."
+        "release_readiness": "Execute the declared supported-version matrix in an independently identified installation or isolated container for every claimed materially distinct release line, or narrow the compatibility claim to the versions actually tested."
       }
     },
     {

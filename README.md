@@ -21,7 +21,19 @@ Authorship method is not a proxy for software quality. Reviews evaluate the exac
 - `published-reviews/` — public review examples or reports, each with an explicit status and candidate identity.
 - `CONTRIBUTING.md` — the public contribution and platform-authority boundary.
 
-The Discourse package contains the complete working Markdown skill and its complete structured improvement core. The vendored Statamic skill remains unchanged from its official source. CodeWorksLabs additions live outside that file.
+The Discourse package contains the complete working Markdown skill and its canonical versioned `DiscourseSkill.json` core. The vendored Statamic skill remains unchanged from its official source. CodeWorksLabs additions live outside that file.
+
+## Versioning
+
+The Discourse package separates JSON schema evolution from review-policy evolution:
+
+- `format_version` identifies the machine-readable schema;
+- `ruleset_version` identifies substantive review guidance;
+- Git tags use `discourse-skill-vMAJOR.MINOR.PATCH`;
+- `DiscourseSkill.json` and `DiscourseSkill.md` are stable current paths;
+- immutable tags and commits identify historical releases.
+
+Changes to one active representation must reconcile the other and refresh the recorded identities in `PROVENANCE.md`. The originating artifacts under `sources/` remain unchanged.
 
 ## Public-by-default boundary
 
